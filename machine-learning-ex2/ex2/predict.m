@@ -15,6 +15,17 @@ p = zeros(m, 1);
 %               You should set p to a vector of 0's and 1's
 %
 
+% we now use the optimized theta values
+% for a given x, find h(x)
+% if h(x) >= 0.5, prediction = 1 else 0
+% I'm confused about one thing..
+% theta dimension is nx1
+% X dimension is mxn
+% Transpose(theta) dimension = 1xn
+% how can I multiply 1xn * m*n
+
+hofx = sigmoid(X * theta)
+p = hofx >= 0.5
 
 
 

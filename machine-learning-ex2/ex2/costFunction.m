@@ -34,6 +34,8 @@ J = (1/m) .* sum((-y .* log(hofx)) - ((1 - y) .* log(1 - hofx)));
 % partial derivative
 % (1/m) * sum (h(x) - y) * x
 % sum performs addition column wise
+% note that gradient descent doesn't really 
+% depend on the cost value J
 grad = ((1/m) .* sum((hofx - y) .* X));
 
 
