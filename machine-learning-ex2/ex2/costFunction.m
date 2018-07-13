@@ -20,6 +20,22 @@ grad = zeros(size(theta));
 % Note: grad should have the same dimensions as theta
 %
 
+% cost function of logistic regresision
+% J(theta) = 1/m sum ( -y*log(h(x)) - (1-y)log(1-h(x)))
+
+% hypothesis derived from sigmoid function
+% sigmoid = (1 / (1 + e^-z))
+% for logistic regression, z = theta' * X
+hofx = (1 ./ (1 + e .^ (-(X * theta))));
+
+J = (1/m) .* sum((-y .* log(hofx)) - ((1 - y) .* log(1 - hofx)));
+
+% gradient descent formula is
+% partial derivative
+% (1/m) * sum (h(x) - y) * x
+% sum performs addition column wise
+grad = ((1/m) .* sum((hofx - y) .* X));
+
 
 
 
