@@ -12,6 +12,8 @@ function plotDecisionBoundary(theta, X, y)
 plotData(X(:,2:3), y);
 hold on
 
+% size returns rows, columns
+% size(X, 2) - picks the columns 
 if size(X, 2) <= 3
     % Only need 2 points to define a line, so choose two endpoints
     plot_x = [min(X(:,2))-2,  max(X(:,2))+2];
@@ -34,9 +36,13 @@ else
     % Evaluate z = theta*x over the grid
     for i = 1:length(u)
         for j = 1:length(v)
+            % mapFeature returns a 1X28
+            % theta is 28X1
+            % so mapFeature * theta  = 1 X 1
             z(i,j) = mapFeature(u(i), v(j))*theta;
         end
     end
+    z
     z = z'; % important to transpose z before calling contour
 
     % Plot z = 0
