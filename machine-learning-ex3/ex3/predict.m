@@ -20,6 +20,18 @@ p = zeros(size(X, 1), 1);
 %       information see 'help max'. If your examples are in rows, then, you
 %       can use max(A, [], 2) to obtain the max for each row.
 %
+X1 = [ones(size(X, 1), 1) X];
+
+A = sigmoid(X1 * Theta1'); % 5000x401 * 401*25 ==> 5000 x 25
+
+A1 = [ones(size(A, 1), 1) A];
+
+HofX = sigmoid(A1 * Theta2'); % 5000 x 26 * 26*10 ==> 5000 x 10
+
+[val, p] = max(HofX, [], 2); %max(X, [], DIM), DIM = 1 if column, 2 if row
+
+
+
 
 
 

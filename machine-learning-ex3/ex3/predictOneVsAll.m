@@ -29,12 +29,17 @@ X = [ones(m, 1) X];
 %       are in rows, then, you can use max(A, [], 2) to obtain the max 
 %       for each row.
 %       
+% X is 5000 x 401
+% p is 5000
+% theta is 10 x 401
+% X * theta' = will give 5000x10
+% remeber the formula from Neural network classifier prediction?
+% h(x) = g(theta1*x1 + theta2*x2 ... thetaN*xN)
+% pick the highest h(x) for each row... index of the highest h(x)
+% gives the class to which the prediction belongs
 
-
-
-
-
-
+hofx = sigmoid(X * all_theta');
+[val, p] = max(hofx, [], 2); # to compute row wise.
 
 % =========================================================================
 

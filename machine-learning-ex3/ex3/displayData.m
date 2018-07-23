@@ -48,6 +48,10 @@ for j = 1:display_rows
 	end
 end
 
+# reversing the dimensions to avoid upside-down
+# plotting by gnuplot
+display_array = flipud(display_array);
+
 % Display Image
 h = imagesc(display_array, [-1 1]);
 
