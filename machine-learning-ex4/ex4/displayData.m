@@ -48,6 +48,10 @@ for j = 1:display_rows
 	end
 end
 
+% reversing the dimensions to avoid displaying 
+% image upside down in the plot
+display_array = flipud(display_array);
+
 % Display Image
 h = imagesc(display_array, [-1 1]);
 
