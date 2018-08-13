@@ -47,12 +47,11 @@ x = zeros(n, 1);
 %              x = [ 0 0 0 0 1 0 0 0 ... 0 0 0 0 1 ... 0 0 0 1 0 ..];
 %
 %
-
-
-
-
-
-
+% Go through the word indices
+% set x[word_indices] = 1
+for i = 1 : length(word_indices)
+    x(word_indices(i)) = 1;
+end
 
 
 % =========================================================================
