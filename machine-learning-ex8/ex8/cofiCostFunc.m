@@ -42,22 +42,25 @@ Theta_grad = zeros(size(Theta));
 
 sumOfSqrdError = 0;
 
-% I don't know if there is way to vectorize this computation
-% given that we have to accumulate the sum only for R(i, j) == 1
-for i = 1 : num_movies
-    for j = 1 : num_users
-        if R(i, j) == 1
-            % In the problem statement, it was given to calculate theta' * X
-            % however, that cannot be used here.
-            % X(i, :) -> 1xN matrix, Theta(j,:) -> 1xN
-            % so X * Theta' will give 1x1 matrix, which is what we want.
-            thisSqrdError = (((X(i, :) * Theta(j,:)') .- Y(i, j)) .^ 2);
-            sumOfSqrdError = sumOfSqrdError + thisSqrdError;
-        end
-    end
-end
+% % given that we have to accumulate the sum only for R(i, j) == 1
+% for i = 1 : num_movies
+%     for j = 1 : num_users
+%         if R(i, j) == 1
+%             % In the problem statement, it was given to calculate theta' * X
+%             % however, that cannot be used here.
+%             % X(i, :) -> 1xN matrix, Theta(j,:) -> 1xN
+%             % so X * Theta' will give 1x1 matrix, which is what we want.
+%             thisSqrdError = (((X(i, :) * Theta(j,:)') .- Y(i, j)) .^ 2);
+%             sumOfSqrdError = sumOfSqrdError + thisSqrdError;
+%         end
+%     end
+% end
 
-J = (1/2) * sumOfSqrdError;
+% X - movies x features, Theta' - features x users
+% Y - movies x users
+J_inclusive_of_all_r = ((X * Theta') .- Y) .^ 2;
+
+J = (1/2) * sum(sum(J_inclusive_of_all_r .* R));
 
 
 % =============================================================
