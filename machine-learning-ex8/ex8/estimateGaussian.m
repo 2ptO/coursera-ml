@@ -21,8 +21,15 @@ sigma2 = zeros(n, 1);
 %               should contain variance of the i-th feature.
 %
 
+% Manual calculation of mean and variance
+% for i = 1 : n
+%     mu(i, 1) = sum(X(:, i)) / m;
+%     sigma2(i, 1) = (sum((X(:, i) .- mu(i, 1)) .^ 2)) / m;
+% end
 
-
+% Using Octave functions
+mu = mean(X)'
+sigma2 = var(X, 1)'
 
 
 
