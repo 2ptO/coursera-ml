@@ -28,8 +28,8 @@ sigma2 = zeros(n, 1);
 % end
 
 % Using Octave functions
-mu = mean(X)'
-sigma2 = var(X, 1)'
+mu = mean(X)';
+sigma2 = var(X, 1)';
 
 
 

@@ -10,6 +10,10 @@ bestEpsilon = 0;
 bestF1 = 0;
 F1 = 0;
 
+[pm, pn] = size(pval);
+
+fprintf("Size of pval = %d %d\n", pm, pn)
+
 stepsize = (max(pval) - min(pval)) / 1000;
 for epsilon = min(pval):stepsize:max(pval)
     
@@ -24,16 +28,23 @@ for epsilon = min(pval):stepsize:max(pval)
     %       of 0's and 1's of the outlier predictions
 
 
+    predictions = (pval < epsilon);
+    tp = sum((predictions == 1) & (yval == 1));
+    fp = sum((predictions == 1) & (yval == 0));
+    fn = sum((predictions == 0) & (yval == 1));
 
+    if tp == 0
+        fprintf("no true positives for epsilon = %d, fp = %d, fn = %d\n", epsilon, fp, fn);
+    end
 
+    precision = tp/(tp + fp);
+    recall = tp/(tp + fn);
 
+    if recall == 0 && precision == 0
+        fprintf("Div by zero\n");
+    end
 
-
-
-
-
-
-
+    F1 = (2 * precision * recall) / (precision + recall);
 
     % =============================================================
 
