@@ -57,10 +57,15 @@ sumOfSqrdError = 0;
 % end
 
 % X - movies x features, Theta' - features x users
-% Y - movies x users
+% Y - movies x users, R - movies x users
 J_inclusive_of_all_r = ((X * Theta') .- Y) .^ 2;
 
-J = (1/2) * sum(sum(J_inclusive_of_all_r .* R));
+J_without_regularization = (1/2) * sum(sum(J_inclusive_of_all_r .* R));
+
+reg_factor_theta = (lambda/2) * sum(sum((Theta .^ 2)));
+reg_factor_X = (lambda/2) * sum(sum((X .^ 2)));
+
+J = J_without_regularization + reg_factor_theta + reg_factor_X;
 
 % Compute X_grad using a for loop
 % for i = 1 : num_movies
@@ -76,8 +81,10 @@ J = (1/2) * sum(sum(J_inclusive_of_all_r .* R));
 % course TA.
 error_factor = (((X * Theta') .- Y) .* R); % movies x users
 
-X_grad = error_factor * Theta; % movies x users * users x features
-Theta_grad = error_factor' * X; % movies x users * movies x features
+grad_reg_factor = (lambda.*X);
+theta_grad_reg_factor = (lambda .* Theta);
+X_grad = error_factor * Theta + grad_reg_factor;% movies x users * users x features
+Theta_grad = error_factor' * X + theta_grad_reg_factor; % movies x users * movies x features
 
 % =============================================================
 
