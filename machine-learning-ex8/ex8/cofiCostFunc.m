@@ -62,6 +62,22 @@ J_inclusive_of_all_r = ((X * Theta') .- Y) .^ 2;
 
 J = (1/2) * sum(sum(J_inclusive_of_all_r .* R));
 
+% Compute X_grad using a for loop
+% for i = 1 : num_movies
+%     idx = find(R(i, :) == 1);
+%     Theta_temp = Theta(idx, :); % pick only the users who rated
+%     Y_temp = Y(i, idx); % pick only the rates ones
+%     X_grad(i, :) = ((X(i, :) * Theta_temp') .- Y_temp) * Theta_temp;
+% end
+
+% Compute X_grad and Theta_grad with vectorized method.
+% If there was no tutorial for this part, it would have
+% been very difficult to complete this. Thanks to the
+% course TA.
+error_factor = (((X * Theta') .- Y) .* R); % movies x users
+
+X_grad = error_factor * Theta; % movies x users * users x features
+Theta_grad = error_factor' * X; % movies x users * movies x features
 
 % =============================================================
 
