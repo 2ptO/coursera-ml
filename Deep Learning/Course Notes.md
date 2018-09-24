@@ -1,0 +1,47 @@
+# Deep Learning Course Notes
+
+## Week 1
+### Introduction
+* AI - impact of AI analagous to impact of Electricity 
+* Specialization outline
+    * Basic Deep Learning
+    * Hyperparameters tuning, regularization, optimization
+    * Building a project
+    * CNN
+    * RNN
+    * Shallow learning vs Deep learning
+
+### Neural networks intuition
+* E.g. housing price prediction
+* Consider each node as a ReLU (Rectified Linear Unit)..can sometimes use non-linear function too, depending on the problem in hand
+![Housing Price Prediction](images/neural-networks-intuition.png)
+* Applications in supervised learning
+
+### Supervise Learning with NN
+* Lots of famous applications
+* Using standard neural networks
+    * Real Estate (house price prediction)
+    * Online ads based on user info - predict click
+* Using Convolution Neural Network (CNN) 
+    * Image recognition
+* Using Recurrent Neural Network (RNN)
+    * Speech recognition
+    * Language translation
+* Hybrid
+    * autonomous driving - decide direction based on the image, position of other cars on road - custom NN
+* Supervised learning
+    * Structured Data
+    * Unstructured Data
+        * Audio
+        * Image
+    * Short term value creation of NN - much in the structured data. although it is immensely useful in unstructured data as well
+
+### Why deep learning is taking off?
+* Data availability vs performance graph
+![Why deep learning is taking off](images/why-deep-learning-is-taking-off.png)
+* With smaller data sets, performance of NN doesn't necessarily increase as we scale up the size of NN.
+* Algorithmic innovation drove innovation and efficiency in computation
+* sigmoid function vs ReLU
+    * Slow learning rate (gradient is nearly 0) on either ends of the sigmoid curve
+    * ReLU - better learning rate
+* Building a neural network is more of a iterative approach - Idea --> Code --> Experiment --> Idea --> Code...
