@@ -46,7 +46,7 @@
     * ReLU - better learning rate
 * Building a neural network is more of a iterative approach - Idea --> Code --> Experiment --> Idea --> Code...
 
-### Interview with Geoffrey Hinton
+### Interview with [Geoffrey Hinton](https://en.wikipedia.org/wiki/Geoffrey_Hinton)
 * Inspired from brain science.. background in Physiology and Physics.. then some psycology..then carpentry.. then AI
 * Co-invented back propagation algorithm
 * Graph representation <--> Feature vector
@@ -61,3 +61,4 @@
 * Google Brain residents? 
 * Geoffrey did the first MOOC on deep learning on Coursera
 * Thoughts - as symbolic expression vs vectorized ops
+* Haven't heard about him before this talk. After reading few articles, I realized why he is rightly referred as Godfather of AI/Deep Learning. Respect!
