@@ -45,3 +45,19 @@
     * Slow learning rate (gradient is nearly 0) on either ends of the sigmoid curve
     * ReLU - better learning rate
 * Building a neural network is more of a iterative approach - Idea --> Code --> Experiment --> Idea --> Code...
+
+### Interview with Geoffrey Hinton
+* Inspired from brain science.. background in Physiology and Physics.. then some psycology..then carpentry.. then AI
+* Co-invented back propagation algorithm
+* Graph representation <--> Feature vector
+* Boltzman machine - Geoffrey considers this as his best - Restrcited Boltzman machine 
+* Deep Belief Nets
+* ReLU - somewhat equivalent to stacked logistic units
+* Backprop and Brain - Geoffrey is working on a paper..is brain really using backprop? referred to brain plasticity in connection to how brain learns
+* Some more advanced concepts that stick to my brain :-(
+* He works with Google Brain team too
+* Discriminative learning - refers to supervised learning. In initial days, lot of focus on unsupervised learning as that is how brain is believed to learn. Recent advancements in deep learning with supervised learning, especially in the last ten years or so really pushed the focus in a different direction. unsupervised learning is still largely unsolved problem. 
+* Advice to people who wants to get into deep learning - trust your intuitions 
+* Google Brain residents? 
+* Geoffrey did the first MOOC on deep learning on Coursera
+* Thoughts - as symbolic expression vs vectorized ops
