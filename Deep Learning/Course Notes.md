@@ -79,7 +79,7 @@
 * Given X, want Y = P(y=1 | x)
 * Cannot use linear regression (&theta;<sup>T</sup>x + b) here as the output value is not a continuous number. we want the probability.. value in the range 0..1
 * Comes the sigmoid function &sigma;(z) = 1 / (1 + e<sup>-z</sup>)
-* ![Logistic Regression](images/Logistic Regression.png)
+* ![Logistic Regression](images/logistic-regression.png)
 
 ### Logistic Regression Cost function
 * Takeaway from last video: &theta; replaced by `w` and X<sub>0</sub> replaced by `b` in the notations.
@@ -88,21 +88,21 @@
 * Below image explains why this error function makes sense for logistic regression.
 * Loss/Error function - computes the error for single training example
 * Cost function - average of the loss functions of the entire training set.
-* ![Logistic Regression](images/Logistic Regressin Cost function.png)
-
+* ![Logistic Regression](images/logistic-regression-cost-function.png)
+  
 ### Gradient Descent
 * Hypothesis function: y' = &sigma;(w<sup>T</sup>x + b), &sigma;(z) = 1 / (1 + e<sup>-z</sup>)
 * Cost function: J(w, b) = 1/m L(y'<sup>(i)</sup>, y<sup>(i)</sup>)
 * Loss function: $L(y', y) = - (ylogy' + (1-y)log(1-y'))$
 * want to find w, b that minimizes $J(w, b)$
 * cost function here is a convex function
-![Convex function](images/Convex function.png)
+![Convex function](images/convex-function.png)
 * To minimize w and b, we repeatedly reduce w, b by a small factor at every step of the descent. 'small factor' here referes to the partial derivate of the cost function with respect to w ($dJ(w, b)/dw)$ and b($dJ(w, b)/db)$, multiplied by the learning rate &alpha;
 * In simple terms, derivative is the direction of the slope. Depending on where we are in the cost curve, derivatives will lead us to the local optima
 * In the code, derivative of parameter `w` is denoted as `dw` and `b` is denoted as `db`
-* ![Gradient Descent](images/Gradient Descent.png)
+* ![Gradient Descent](images/gradient-descent.png)
 
 ### Derivatives - Intuition
 * Derivative == slope
 * how much $f(a)$ changes with respect to changes in $a$
-* ![Derivatives Intuition](images/Derivates Inuition.png)
+* ![Derivatives](images/derivates-intution.png)
