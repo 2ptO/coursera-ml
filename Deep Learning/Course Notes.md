@@ -62,3 +62,47 @@
 * Geoffrey did the first MOOC on deep learning on Coursera
 * Thoughts - as symbolic expression vs vectorized ops
 * Haven't heard about him before this talk. After reading few articles, I realized why he is rightly referred as Godfather of AI/Deep Learning. Respect!
+
+## Week 2 - Basics of Neural network programming
+### Binary classification
+* Determine a given image is of cat or not
+* 64 pixel image in the example. each pixel in the image represented by three values Red, Green and Blue
+* That's 3 64x64 matrix
+* Notations:
+    * X - N<sub>x</sub> x m matrix, m - number of training examples, Nx - number of features
+    * Y - [y<sup>1</sup> y<sup>2</sup>...y<sup>m</sup>] - 1 x m matrix
+    * Can obtain by the shape (dimension) of the matrix in python by X.shape, Y.shape
+    * *Note: In earlier course (machine learning), we used the X matrix as mxn matrix, whereas we use nxm here.*
+    * *[This wiki article](https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references) came in handy to refer to symbols in markdown*
+  
+### Logistic Regression
+* Given X, want Y = P(y=1 | x)
+* Cannot use linear regression (&theta;<sup>T</sup>x + b) here as the output value is not a continuous number. we want the probability.. value in the range 0..1
+* Comes the sigmoid function &sigma;(z) = 1 / (1 + e<sup>-z</sup>)
+* ![Logistic Regression](images/Logistic Regression.png)
+
+### Logistic Regression Cost function
+* Takeaway from last video: &theta; replaced by `w` and X<sub>0</sub> replaced by `b` in the notations.
+* Linear regression uses squared error function..applying that here will give many local optima instead of a global optima. so we use a different error function for logistic regression
+* $L(y', y) = - (ylogy' + (1-y)log(1-y'))$
+* Below image explains why this error function makes sense for logistic regression.
+* Loss/Error function - computes the error for single training example
+* Cost function - average of the loss functions of the entire training set.
+* ![Logistic Regression](images/Logistic Regressin Cost function.png)
+
+### Gradient Descent
+* Hypothesis function: y' = &sigma;(w<sup>T</sup>x + b), &sigma;(z) = 1 / (1 + e<sup>-z</sup>)
+* Cost function: J(w, b) = 1/m L(y'<sup>(i)</sup>, y<sup>(i)</sup>)
+* Loss function: $L(y', y) = - (ylogy' + (1-y)log(1-y'))$
+* want to find w, b that minimizes $J(w, b)$
+* cost function here is a convex function
+![Convex function](images/Convex function.png)
+* To minimize w and b, we repeatedly reduce w, b by a small factor at every step of the descent. 'small factor' here referes to the partial derivate of the cost function with respect to w ($dJ(w, b)/dw)$ and b($dJ(w, b)/db)$, multiplied by the learning rate &alpha;
+* In simple terms, derivative is the direction of the slope. Depending on where we are in the cost curve, derivatives will lead us to the local optima
+* In the code, derivative of parameter `w` is denoted as `dw` and `b` is denoted as `db`
+* ![Gradient Descent](images/Gradient Descent.png)
+
+### Derivatives - Intuition
+* Derivative == slope
+* how much $f(a)$ changes with respect to changes in $a$
+* ![Derivatives Intuition](images/Derivates Inuition.png)
