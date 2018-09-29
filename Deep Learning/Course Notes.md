@@ -142,3 +142,67 @@ $log_e(a)$ | $\frac{1}{a}$
 * ![Logistic Regression Derivatives](images/logistic-regression-derivates.png)
   
 ### Logistic Regression on $m$ examples
+* Cost function $J(w,b) = \frac{1}{m}\displaystyle \sum_{i=1}^{m} L(a^{(i)}, y^{(i)}x)$, where $\hat{y}^{(i)} = \sigma(Z^{(i)}) = \sigma(w^TX^{(i)} + b)$ 
+* To find the derivatives $d/dw_1$, $d/dw_2$ and so on, we take the sum of the derivatives of the loss function with respect to each $w$
+* $\frac{d}{dw_1} J(w,b) = \frac{1}{m}\sum_{i=1}^{m} \frac{d}{dw_1}L(a^{(i)}, y^{(i)})$
+* Implementing the gradient calculation with for loop. This doesn't scale good as the data set size goes up. Vectorization to the rescue
+* - [ ] Add image
+
+### Vectorization
+* Initialized two random arrays with numpy. Taking the product of two arrays with vectorized version beats the non-vectoried version by over 300 times in the example run
+* Product using for-loop
+```python
+a = np.random.rand(100000) # generates an array with 1M random values
+b = np.random.rand(100000)
+
+c = 0
+for i in range(100000):
+    c += a[i]*b[i]
+end
+```
+* Vectorized version
+```python
+c = np.dot(a,b)
+```
+* The time taken to process this simple calculation is remarkably efficient with the vectorized implementation that takes advantage of the SIMD (Single Instruction Multiple Data) capabilities of the CPU/GPU.
+
+### More vectorization examples
+* Neural programming guidelines
+    * whenever possible, avoid explicit for loops
+* Computing exponential values of a matrix with for-loop and vectorization
+* $v = [v_1, v_2, v_3, ... v_n]$, find $u = [e^{v_1}, e^{v_2}, e^{v_3},.. e^{v_n}]$
+* For-loop
+```python
+u = np.zeros((n, 1)) #is (n, 1) a tuple or arg?
+for i in range(n):
+    u[i] = math.exp(v[i])
+```
+* Vectorized method
+```python
+import numpy as np
+u = np.exp(v)
+```
+* Other vectorized functions
+```python
+np.log(v)
+np.abs(v)
+np.maximum(v, 0)
+# many more
+```
+* Vectorizing logistic regression - begins with vectorizing inner loop
+* ![Vectorizing logistic regression](images/vectorizing-logistic-regression-inner-loop.png)
+
+### Vectorizing Logistic Regression
+* $z^{(1)} = w^Tx^{(1)} + b$,$z^{(2)} = w^Tx^{(2)} + b$, $z^{(3)} = w^Tx^{(3)} + b$, and so on
+* $w$ is of shape(aka dimension) ($n_x,1)$, X is of shape $(n_x,m)$, $w^T$ is $(1,n_x)$, that results is Z(=$w^T*X + b$) as $(1,m)$ matrix. Z computed as
+  ```python
+  z = np.dot(w.T, X) + b # w.T generates transpose of w
+  ```
+* Python automatically broadcasts the scalar value $b$ to the dimension of the other operand.
+* Now calculate, A by calculating sigmoid of Z
+* ![vectorizing logistic regression step 2](images/vectorizing-logisitic-regression-step2.png)
+
+### Vectorizing Gradient Descent
+* Reducing the gradient descent calculation to no for-loops using vectorized implementation
+* ![Vectorizing gradient descent](images/vectorizing-gradient-descent-calc.png)
+* above is a single iteration of gradient descent. we will still need a for-loop to run this iteration multiple times to take further steps in the direction of the gradient descent
