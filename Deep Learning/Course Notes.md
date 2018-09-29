@@ -106,3 +106,39 @@
 * Derivative == slope
 * how much $f(a)$ changes with respect to changes in $a$
 * ![Derivatives](images/derivates-intution.png)
+
+### More Derivative Examples
+* $f(a) = a^2$, slope varies at different points of $a$ for this $f(a)$
+* e.g. a = 2, f(a) = 4
+* If a = 2.001, then f(a) ~= 4.004 - if we nudge a by 0.001, then f(a) changes by 4 times the nudge factor.
+* If a = 5, f(a) = 25, a = 5.001 then f(a) ~= 25.01. Here f(a) changes by 10 times the nudge factor.
+* Change in f(a) is denoted by the slope of the curve that f(a) generates. Derivative of the f(a) gives the slope. 
+* Math formula: $\frac{d}{da}f(a) = \frac{d}{da} a^2 = 2a$
+* Some more examples
+
+f(a) | derivative
+---- | ----------
+$a^2$| $2a$
+$a^3$| $3a^2$
+$log_e(a)$ | $\frac{1}{a}$
+
+### Computation Graphs
+* Why neural network is organized as forward prop and back prop?
+* E.g. function $J = 3(a + bc)$ - visualize this computation as a graph
+* ![Computation Graph](images/computation-graph.png)
+* On forward prop, we compute J from u and v
+* On backward prop, we compute the derivates of a, b, c $da, db, dc$ - how much J changes with respect to changes in a, b and c.
+* There is a lot in this picture. Observe each components carefully to see what is going on. The red color variable names are used as variable names in Python in the coding examples too.
+* ![Computing Derivatives](images/computing-derivatives.png)
+* In general, d*var* represents derivative of the final output (typically the cost function or error function) with respect to the input or intermediate values
+
+### Logistic Regression Gradient Descent
+* like the previous example, the input parameters here are:
+    * X - [x1, x2]
+    * w - [w1, w2] - This is nothing but $\theta$ parameter that we used in the earlier class
+    * b - bias parameter
+* Gradient descent tells us the direction and magnitude to go from the current values of w1, w2 and b.
+* Find dw1, dw2 and db, then find the new values of w1, w2 and b by using the learning rate and descent.
+* ![Logistic Regression Derivatives](images/logistic-regression-derivates.png)
+  
+### Logistic Regression on $m$ examples
