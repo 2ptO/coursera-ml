@@ -144,7 +144,7 @@ $log_e(a)$ | $\frac{1}{a}$
 ### Logistic Regression on $m$ examples
 * Cost function $J(w,b) = \frac{1}{m}\displaystyle \sum_{i=1}^{m} L(a^{(i)}, y^{(i)}x)$, where $\hat{y}^{(i)} = \sigma(Z^{(i)}) = \sigma(w^TX^{(i)} + b)$ 
 * To find the derivatives $d/dw_1$, $d/dw_2$ and so on, we take the sum of the derivatives of the loss function with respect to each $w$
-* $\frac{d}{dw_1} J(w,b) = \frac{1}{m}\sum_{i=1}^{m} \frac{d}{dw_1}L(a^{(i)}, y^{(i)})$
+* $\frac{\partial}{\partial w_1} J(w,b) = \frac{1}{m}\sum_{i=1}^{m} \frac{\partial}{\partial w_1}L(a^{(i)}, y^{(i)})$
 * Implementing the gradient calculation with for loop. This doesn't scale good as the data set size goes up. Vectorization to the rescue
 * - [ ] Add image
 
@@ -206,3 +206,31 @@ np.maximum(v, 0)
 * Reducing the gradient descent calculation to no for-loops using vectorized implementation
 * ![Vectorizing gradient descent](images/vectorizing-gradient-descent-calc.png)
 * above is a single iteration of gradient descent. we will still need a for-loop to run this iteration multiple times to take further steps in the direction of the gradient descent
+
+### Programming assignment
+* Went through basics of numpy operations, functions to perform computations
+* Built a simple logistic regression model to classify a image as cat or not-cat. 
+* The common steps in building a model are:
+    * Initialize the parameters $X$, $y$, $w$, $b$
+    * Optimize - to find the values of parameters $w$ and $b$ that reduces the overall cost $J$
+        * Forward propagation - find the error/loss
+        * Backward propagation - gradient descent
+    * Predict - using the learned parameters, predict the output of the training set and test set
+
+### TODO
+- [ ] Python notebook with numpy examples and operations
+- [ ] My own version of simple model
+  
+### Interview with Pieter Abbeel
+* Working on Deep Reinforcement Learning
+* ImageNet - breakthrough in supervised learning
+* Deep Reinforcement Learning - in addition to input-output mapping of supervised learning, it also finds where the input comes from.. not sure I caught this right. that phase is more about exploration of the input data
+* Recent advancements in Deep Reinforcement Learning - atari games, robots self-learning to walk/run, 
+* DRL - machine learning from the human interactions, e.g. Facebook Assistant
+
+### Resources
+* [Markdown reference](https://guides.github.com/features/mastering-markdown/)
+* [Math equations in Markdown](https://en.wikibooks.org/wiki/LaTeX/Mathematics) - this came in very handy in writing down equations and math symbols while taking notes from the class. I found the tool [Detexify](http://detexify.kirelabs.org/classify.html) to be quite useful in finding the text for a given symbol. This [link](https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/) also came in handy for quick references.
+* [Machine learning is fun - Building a CNN image classifier](https://medium.com/@ageitgey/machine-learning-is-fun-part-3-deep-learning-and-convolutional-neural-networks-f40359318721)
+
+
