@@ -6,7 +6,13 @@ Math symbols and equivalent special text in markdown and latex to display them. 
 
 | Symbol |Text | Notes |
 -------|--------|-------|
-$\alpha$ | \alpha| Math Alpha|
-&alpha; | \&alpha| HTML alpha |
-$\lambda$ |\lambda|  Lambda |
-$\hat{y}$ |\hat{y}| Y hat - output, given input X to a neural net
+|$\alpha$   | \alpha    | Math Alpha|
+|&alpha;    | \&alpha   | HTML alpha |
+|$\lambda$  |\lambda    |  Lambda |
+|$\hat{y}$  |\hat{y}    | Y hat - output, given input X to a neural net|
+|$y_i$      |y_i        | Subscripting |
+|$y^i$      |y^i        | Superscripting |
+|$y^{(i)}   |y^{(i)}    | Superscripting multiple characters |
+|$\sum$     |\sum       | Summation
+|$\displaystyle \sum_{i=1}^m$ | \displaystyle \sum_{i=1}^m | Summation with range values |
+|$\sum_{i=1}^m$ | \sum_{i=1}^m | range displayed little off without the \displaystyle environment |
