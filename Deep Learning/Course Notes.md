@@ -1,7 +1,32 @@
 # Deep Learning Course Notes
-
-## Week 1
-### Introduction
+- [Deep Learning Course Notes](#deep-learning-course-notes)
+- [Week 1](#week-1)
+    - [Introduction](#introduction)
+    - [Neural networks intuition](#neural-networks-intuition)
+    - [Supervise Learning with NN](#supervise-learning-with-nn)
+    - [Why deep learning is taking off?](#why-deep-learning-is-taking-off)
+    - [Interview with Geoffrey Hinton](#interview-with-geoffrey-hinton)
+- [Week 2 - Basics of Neural network programming](#week-2---basics-of-neural-network-programming)
+    - [Binary classification](#binary-classification)
+    - [Logistic Regression](#logistic-regression)
+    - [Logistic Regression Cost function](#logistic-regression-cost-function)
+    - [Gradient Descent](#gradient-descent)
+    - [Derivatives - Intuition](#derivatives---intuition)
+    - [More Derivative Examples](#more-derivative-examples)
+    - [Computation Graphs](#computation-graphs)
+    - [Logistic Regression Gradient Descent](#logistic-regression-gradient-descent)
+    - [Logistic Regression on $m$ examples](#logistic-regression-on-m-examples)
+    - [Vectorization](#vectorization)
+    - [More vectorization examples](#more-vectorization-examples)
+    - [Vectorizing Logistic Regression](#vectorizing-logistic-regression)
+    - [Vectorizing Gradient Descent](#vectorizing-gradient-descent)
+    - [Programming assignment](#programming-assignment)
+    - [Interview with Pieter Abbeel](#interview-with-pieter-abbeel)
+    - [Resources](#resources)
+    - [Summary](#summary)
+    - [TODO](#todo)
+# Week 1
+## Introduction
 * AI - impact of AI analagous to impact of Electricity 
 * Specialization outline
     * Basic Deep Learning
@@ -11,13 +36,13 @@
     * RNN
     * Shallow learning vs Deep learning
 
-### Neural networks intuition
+## Neural networks intuition
 * E.g. housing price prediction
 * Consider each node as a ReLU (Rectified Linear Unit)..can sometimes use non-linear function too, depending on the problem in hand
 ![Housing Price Prediction](images/neural-networks-intuition.png)
 * Applications in supervised learning
 
-### Supervise Learning with NN
+## Supervise Learning with NN
 * Lots of famous applications
 * Using standard neural networks
     * Real Estate (house price prediction)
@@ -36,7 +61,7 @@
         * Image
     * Short term value creation of NN - much in the structured data. although it is immensely useful in unstructured data as well
 
-### Why deep learning is taking off?
+## Why deep learning is taking off?
 * Data availability vs performance graph
 ![Why deep learning is taking off](images/why-deep-learning-is-taking-off.png)
 * With smaller data sets, performance of NN doesn't necessarily increase as we scale up the size of NN.
@@ -46,7 +71,7 @@
     * ReLU - better learning rate
 * Building a neural network is more of a iterative approach - Idea --> Code --> Experiment --> Idea --> Code...
 
-### Interview with [Geoffrey Hinton](https://en.wikipedia.org/wiki/Geoffrey_Hinton)
+## Interview with [Geoffrey Hinton](https://en.wikipedia.org/wiki/Geoffrey_Hinton)
 * Inspired from brain science.. background in Physiology and Physics.. then some psycology..then carpentry.. then AI
 * Co-invented back propagation algorithm
 * Graph representation <--> Feature vector
@@ -63,8 +88,8 @@
 * Thoughts - as symbolic expression vs vectorized ops
 * Haven't heard about him before this talk. After reading few articles, I realized why he is rightly referred as Godfather of AI/Deep Learning. Respect!
 
-## Week 2 - Basics of Neural network programming
-### Binary classification
+# Week 2 - Basics of Neural network programming
+## Binary classification
 * Determine a given image is of cat or not
 * 64 pixel image in the example. each pixel in the image represented by three values Red, Green and Blue
 * That's 3 64x64 matrix
@@ -75,13 +100,13 @@
     * *Note: In earlier course (machine learning), we used the X matrix as mxn matrix, whereas we use nxm here.*
     * *[This wiki article](https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references) came in handy to refer to symbols in markdown*
   
-### Logistic Regression
+## Logistic Regression
 * Given X, want Y = P(y=1 | x)
 * Cannot use linear regression (&theta;<sup>T</sup>x + b) here as the output value is not a continuous number. we want the probability.. value in the range 0..1
 * Comes the sigmoid function &sigma;(z) = 1 / (1 + e<sup>-z</sup>)
 * ![Logistic Regression](images/logistic-regression.png)
 
-### Logistic Regression Cost function
+## Logistic Regression Cost function
 * Takeaway from last video: &theta; replaced by `w` and X<sub>0</sub> replaced by `b` in the notations.
 * Linear regression uses squared error function..applying that here will give many local optima instead of a global optima. so we use a different error function for logistic regression
 * $L(y', y) = - (ylogy' + (1-y)log(1-y'))$
@@ -90,7 +115,7 @@
 * Cost function - average of the loss functions of the entire training set.
 * ![Logistic Regression](images/logistic-regression-cost-function.png)
   
-### Gradient Descent
+## Gradient Descent
 * Hypothesis function: y' = &sigma;(w<sup>T</sup>x + b), &sigma;(z) = 1 / (1 + e<sup>-z</sup>)
 * Cost function: J(w, b) = 1/m L(y'<sup>(i)</sup>, y<sup>(i)</sup>)
 * Loss function: $L(y', y) = - (ylogy' + (1-y)log(1-y'))$
@@ -102,12 +127,12 @@
 * In the code, derivative of parameter `w` is denoted as `dw` and `b` is denoted as `db`
 * ![Gradient Descent](images/gradient-descent.png)
 
-### Derivatives - Intuition
+## Derivatives - Intuition
 * Derivative == slope
 * how much $f(a)$ changes with respect to changes in $a$
 * ![Derivatives](images/derivates-intution.png)
 
-### More Derivative Examples
+## More Derivative Examples
 * $f(a) = a^2$, slope varies at different points of $a$ for this $f(a)$
 * e.g. a = 2, f(a) = 4
 * If a = 2.001, then f(a) ~= 4.004 - if we nudge a by 0.001, then f(a) changes by 4 times the nudge factor.
@@ -122,7 +147,7 @@ $a^2$| $2a$
 $a^3$| $3a^2$
 $log_e(a)$ | $\frac{1}{a}$
 
-### Computation Graphs
+## Computation Graphs
 * Why neural network is organized as forward prop and back prop?
 * E.g. function $J = 3(a + bc)$ - visualize this computation as a graph
 * ![Computation Graph](images/computation-graph.png)
@@ -132,7 +157,7 @@ $log_e(a)$ | $\frac{1}{a}$
 * ![Computing Derivatives](images/computing-derivatives.png)
 * In general, d*var* represents derivative of the final output (typically the cost function or error function) with respect to the input or intermediate values
 
-### Logistic Regression Gradient Descent
+## Logistic Regression Gradient Descent
 * like the previous example, the input parameters here are:
     * X - [x1, x2]
     * w - [w1, w2] - This is nothing but $\theta$ parameter that we used in the earlier class
@@ -141,14 +166,14 @@ $log_e(a)$ | $\frac{1}{a}$
 * Find dw1, dw2 and db, then find the new values of w1, w2 and b by using the learning rate and descent.
 * ![Logistic Regression Derivatives](images/logistic-regression-derivates.png)
   
-### Logistic Regression on $m$ examples
+## Logistic Regression on $m$ examples
 * Cost function $J(w,b) = \frac{1}{m}\displaystyle \sum_{i=1}^{m} L(a^{(i)}, y^{(i)}x)$, where $\hat{y}^{(i)} = \sigma(Z^{(i)}) = \sigma(w^TX^{(i)} + b)$ 
 * To find the derivatives $\frac{\partial}{\partial w_1}$, $\frac{\partial}{\partial w_2}$ and so on, we take the sum of the derivatives of the loss function with respect to each $w$
 * $\displaystyle \frac{\partial}{\partial w_1} J(w,b) = \frac{1}{m}\sum_{i=1}^{m} \frac{\partial}{\partial w_1}L(a^{(i)}, y^{(i)})$
 * Implementing the gradient calculation with for loop. This doesn't scale good as the data set size goes up. Vectorization to the rescue
 * ![Logistic Regression on m-examples](images/logistic-regression-on-m-xamples.png)
 
-### Vectorization
+## Vectorization
 * Initialized two random arrays with numpy. Taking the product of two arrays with vectorized version beats the non-vectoried version by over 300 times in the example run
 * Product using for-loop
 ```python
@@ -166,7 +191,7 @@ c = np.dot(a,b)
 ```
 * The time taken to process this simple calculation is remarkably efficient with the vectorized implementation that takes advantage of the SIMD (Single Instruction Multiple Data) capabilities of the CPU/GPU.
 
-### More vectorization examples
+## More vectorization examples
 * Neural programming guidelines
     * whenever possible, avoid explicit for loops
 * Computing exponential values of a matrix with for-loop and vectorization
@@ -192,7 +217,7 @@ np.maximum(v, 0)
 * Vectorizing logistic regression - begins with vectorizing inner loop
 * ![Vectorizing logistic regression](images/vectorizing-logistic-regression-inner-loop.png)
 
-### Vectorizing Logistic Regression
+## Vectorizing Logistic Regression
 * $z^{(1)} = w^Tx^{(1)} + b$,$z^{(2)} = w^Tx^{(2)} + b$, $z^{(3)} = w^Tx^{(3)} + b$, and so on
 * $w$ is of shape(aka dimension) ($n_x,1)$, X is of shape $(n_x,m)$, $w^T$ is $(1,n_x)$, that results is Z(=$w^T*X + b$) as $(1,m)$ matrix. Z computed as
   ```python
@@ -202,12 +227,12 @@ np.maximum(v, 0)
 * Now calculate, A by calculating sigmoid of Z
 * ![vectorizing logistic regression step 2](images/vectorizing-logisitic-regression-step2.png)
 
-### Vectorizing Gradient Descent
+## Vectorizing Gradient Descent
 * Reducing the gradient descent calculation to no for-loops using vectorized implementation
 * ![Vectorizing gradient descent](images/vectorizing-gradient-descent-calc.png)
 * above is a single iteration of gradient descent. we will still need a for-loop to run this iteration multiple times to take further steps in the direction of the gradient descent
 
-### Programming assignment
+## Programming assignment
 * Went through basics of numpy operations, functions to perform computations
 * Built a simple logistic regression model to classify a image as cat or not-cat. 
 * The common steps in building a model are:
@@ -216,19 +241,15 @@ np.maximum(v, 0)
         * Forward propagation - find the error/loss
         * Backward propagation - gradient descent
     * Predict - using the learned parameters, predict the output of the training set and test set
-
-### TODO
-- [ ] Python notebook with numpy examples and operations
-- [ ] My own version of simple model
   
-### Interview with Pieter Abbeel
+## Interview with Pieter Abbeel
 * Working on Deep Reinforcement Learning
 * ImageNet - breakthrough in supervised learning
 * Deep Reinforcement Learning - in addition to input-output mapping of supervised learning, it also finds where the input comes from.. not sure I caught this right. that phase is more about exploration of the input data
 * Recent advancements in Deep Reinforcement Learning - atari games, robots self-learning to walk/run, 
 * DRL - machine learning from the human interactions, e.g. Facebook Assistant
 
-### Resources
+## Resources
 * Markdown
     * [Markdown reference](https://guides.github.com/features/mastering-markdown/)
     * [Math equations in Markdown](https://en.wikibooks.org/wiki/LaTeX/Mathematics) - this came in very handy in writing down equations and math symbols while taking notes from the class. I found the tool [Detexify](http://detexify.kirelabs.org/classify.html) to be quite useful in finding the text for a given symbol. These [link1](https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/), [link2](https://daringfireball.net/projects/markdown/syntax) also came in handy for quick references.
@@ -239,7 +260,7 @@ np.maximum(v, 0)
         * Load the markdown file into a iPython notebook at the end of the course. IPython supports LaTeX equations and Github renders IPython notebook quite effectively.
 * [Machine learning is fun - Building a CNN image classifier](https://medium.com/@ageitgey/machine-learning-is-fun-part-3-deep-learning-and-convolutional-neural-networks-f40359318721)
 
-### Summary
+## Summary
 * This week is all about logistic regression, specifically binary classification
 * Given input X, classify it as 0 or 1. If that matches with given expected value Y, then we predicted correctly.
 * Some key terms and concepts are:
@@ -269,3 +290,6 @@ np.maximum(v, 0)
             * Propagate
             * Optimize
             * Predict
+## TODO
+- [x] Python notebook with numpy examples and operations
+- [ ] My own version of simple model
