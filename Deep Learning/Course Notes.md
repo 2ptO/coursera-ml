@@ -143,7 +143,7 @@ $log_e(a)$ | $\frac{1}{a}$
   
 ### Logistic Regression on $m$ examples
 * Cost function $J(w,b) = \frac{1}{m}\displaystyle \sum_{i=1}^{m} L(a^{(i)}, y^{(i)}x)$, where $\hat{y}^{(i)} = \sigma(Z^{(i)}) = \sigma(w^TX^{(i)} + b)$ 
-* To find the derivatives $d/dw_1$, $d/dw_2$ and so on, we take the sum of the derivatives of the loss function with respect to each $w$
+* To find the derivatives $\frac{\partial}{\partial w_1}$, $\frac{\partial}{\partial w_2}$ and so on, we take the sum of the derivatives of the loss function with respect to each $w$
 * $\displaystyle \frac{\partial}{\partial w_1} J(w,b) = \frac{1}{m}\sum_{i=1}^{m} \frac{\partial}{\partial w_1}L(a^{(i)}, y^{(i)})$
 * Implementing the gradient calculation with for loop. This doesn't scale good as the data set size goes up. Vectorization to the rescue
 * ![Logistic Regression on m-examples](images/logistic-regression-on-m-xamples.png)
@@ -239,3 +239,33 @@ np.maximum(v, 0)
         * Load the markdown file into a iPython notebook at the end of the course. IPython supports LaTeX equations and Github renders IPython notebook quite effectively.
 * [Machine learning is fun - Building a CNN image classifier](https://medium.com/@ageitgey/machine-learning-is-fun-part-3-deep-learning-and-convolutional-neural-networks-f40359318721)
 
+### Summary
+* This week is all about logistic regression, specifically binary classification
+* Given input X, classify it as 0 or 1. If that matches with given expected value Y, then we predicted correctly.
+* Some key terms and concepts are:
+* **Activation function aka sigmoid function:** $\sigma(z) = \frac{1}{1 + e^{-z}}$, where $z = w^T*X + b$. Cannot use linear regression function here as the output has to be probabilistic. Hence sigmoid function
+* **Loss/error function**: $L(\hat{y}, y) = - (ylog\hat{y} + (1-y)log(1-\hat{y}))$ - where $\hat{y} = \sigma(z)$. In simple terms, how much the predicted output $\hat{y}$ differs from the groud truth $y$.
+* **Cost function**
+    * $J(w,b) = \frac{1}{m}\displaystyle \sum_{i=1}^{m} L(\hat{y}, y)$
+    * average of the loss functions over m examples
+    * $w$ - theta parameters
+    * $b$ - bias parameter
+* The goal of logistic regression is to make our prediction as close to the ground truth. If our prediction $\hat{y}$ is close to the given output $y$, then the total error will also be less. If the total error is less, then the total cost $J$ will also be less. Looking backwards, lower the cost better the prediction. Cost depends on two factors: $w$ and $b$. So the goal becomes to find the values of $w$ and $b$ that minimizes the total cost. 
+* Start with random values for $w$ and $b$. Run the computation graph to find the cost. Thats forward propagation. How to find the next set of values for $w$ and $b$? 
+* **Gradient descent** - determines the direction and magnitude to go from the current values of $w$ and $b$. The partial derivatives $dw$ and $db$ determines how much we can nudge $w$ and $b$ to reach the global minimum. We use back propagation to find the partial derivatives $dw$ and $db$, and then update $w$ and $b$.
+    * $\frac{\partial J}{\partial w} = \frac{1}{m} * (X * (A-Y)^T)$
+    * $\frac{\partial J}{\partial b} = \frac{1}{m} * \sum(A-Y)$
+    * $w = w - \alpha*dw$
+    * $b = b - \alpha*db$ - $\alpha$ is the learning rate.
+* Solving the aforementioned functions is highly compute intensive. Looping through each example in the data set and solving the equations will work, but is very time consuming. How to solve that problem?
+* Vectorize the computation. Numpy provides vectorized implementations of many forms of computations and relevant data structures
+* Programming Assignment
+    * Numpy
+        * Covered the basics, operations, arrays, vectors, shape, reshape, matrix multiplications etc.
+    * Logistic Regression Model
+        * Built a model to classify a image as cat or not-cat.
+        * Steps to build a model
+            * Initialize parameters
+            * Propagate
+            * Optimize
+            * Predict
