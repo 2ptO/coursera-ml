@@ -25,6 +25,10 @@
     - [Resources](#resources)
     - [Summary](#summary)
     - [TODO](#todo)
+- [Week 3 - Shallow Neural Networks](#week-3---shallow-neural-networks)
+    - [Neural network overview](#neural-network-overview)
+    - [Neural network representation](#neural-network-representation)
+    - [Computing a NN output](#computing-a-nn-output)
 # Week 1
 ## Introduction
 * AI - impact of AI analagous to impact of Electricity 
@@ -293,3 +297,23 @@ np.maximum(v, 0)
 ## TODO
 - [x] Python notebook with numpy examples and operations
 - [ ] My own version of simple model
+
+# Week 3 - Shallow Neural Networks
+## Neural network overview
+* Taking the computation graph from previous week.. building that into a neural network
+* Adding new levels..each level performing the logistic regression
+* ![neural network overview](images/neural-network-overview.png)
+
+## Neural network representation
+* Building a 2-layer neural network
+    * Input Layer --> Hidden Layer --> Output Layer
+* Parameters: $w^{[i]}$, $b^{[i]}$ at level $i$. Dimension of $w$ and $b$ at level $i$ is determined by (#units_in_output_layer, #units_in_prev_layer)
+* In a single layer neural network, $w$ was a 1-D vector. Whereas, in a multilayer network, it is 2-D matrix. Each node in a layer will get its own $w$ vector.
+* ![neural network representation](images/neural-network-representation.png)
+
+## Computing a NN output
+* Stacking the multiple units into one to perform vectorized computations
+* We compute $z^{[i]}_j$ for $j^{th}$ node in $i^{th}$ level. Stacking all $z$ at level $i$ into $Z^{[1]}$. 
+* Below picture shows the 4 key lines to compute in a 2-layer NN. Dimensions of Z, W, a and b are also mentioned alongside.
+* ![Computing NN](images/computing-a-nn-output.png)
+* The input layer is very simplistic one. Each input in the dataset is represented as real value. Whereas, in real problems, each input will have multiple features and therefore multi-dimensional.
