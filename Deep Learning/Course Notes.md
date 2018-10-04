@@ -279,7 +279,7 @@ np.maximum(v, 0)
 * **Cost function**
     * $J(w,b) = \frac{1}{m}\displaystyle \sum_{i=1}^{m} L(\hat{y}, y)$
     * average of the loss functions over m examples
-    * $w$ - theta parameters
+    * $w$ - theta parameters or weights
     * $b$ - bias parameter
 * The goal of logistic regression is to make our prediction as close to the ground truth. If our prediction $\hat{y}$ is close to the given output $y$, then the total error will also be less. If the total error is less, then the total cost $J$ will also be less. Looking backwards, lower the cost better the prediction. Cost depends on two factors: $w$ and $b$. So the goal becomes to find the values of $w$ and $b$ that minimizes the total cost. 
 * Start with random values for $w$ and $b$. Run the computation graph to find the cost. Thats forward propagation. How to find the next set of values for $w$ and $b$? 
@@ -332,12 +332,12 @@ np.maximum(v, 0)
 * ![vectorize-for-loop](images/vectorizing-across-multiple-examples.png)
 * In all our matrices $X, A, Z$, rows (going top to bottom) maps to the hidden units (or features) and columns (going left to right) maps to the training examples. 
 * Recap
-* Z is also stacked columnwise [$z^{[1]}, z^{[2]}, z^{[3]},...]. If the number of nodes in the hidden units varies, so is the dimension of Z. One thing is little unclear to me: Previously we computed $z^{[1]}$ as (4,1) matrix and $z^{[2]}$ as (1, 1). If we vectorize them, how $z^{[1]}$ and $z^{[2]}$ will be stacked together columnwise? I hope it will be cleared in the coming lectures.
+* Z is also stacked columnwise [$z^{[1]}, z^{[2]}, z^{[3]},...$]. If the number of nodes in the hidden units varies, so is the dimension of Z. One thing is little unclear to me: Previously we computed $z^{[1]}$ as (4,1) matrix and $z^{[2]}$ as (1, 1). If we vectorize them, how $z^{[1]}$ and $z^{[2]}$ will be stacked together columnwise? I hope it will be cleared in the coming lectures. - [*Update*]: Turns out that we don't compute all Z together. We vectorize one Z at a time. Z for each layer of hidden units is computed separately. Also note that dimension of the weights `W` will vary at each layer depending on number of units/nodes in that layer.
 * ![vectorzing-m-examples](images/Recap-vectorizing-across-m-examples.png)
 
 ## Activation functions
 * Alternatives to sigmoid functions
-* Given x, we found $a^{[1]}$ = $sigma(z^{[1]})$. One of the drawback of sigmoid function is that mean is centered around 0.5. It turns out that if mean is centered around 0, it makes it much easier for next layer in the network to compute (more reasoning on this in the coming lectures)
+* Given x, we found $a^{[1]}$ = $\sigma(z^{[1]})$. One of the drawback of sigmoid function is that mean is centered around 0.5. It turns out that if mean is centered around 0, it makes it much easier for next layer in the network to compute (more reasoning on this in the coming lectures)
 * $\displaystyle \tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$
 * Sigmoid is used pretty much only where binary classification is needed. We use $\tanh$ in the hidden layers and sigmoid in the output layer (because we want output probability to be in range [0, 1]) 
 * But there is a common downside too. If Z is too small or too large, slope is almost 0, therefore gradient descent becomes very slow(Ref to graphs below).
@@ -380,4 +380,3 @@ np.maximum(v, 0)
     * Additional factor `0.01` is applied to keep value low enough to avoid slower learning rate. If the random value is large, then g(z) will also be large and we will end up in the flat part of the activation curve
     * Some deep nets may need a different random factor than 0.01. More on this in next week.
 * `b = np.zero(n, 1)` - can be initialized to zero because `b` doesn't suffer from symmetry problem
-* 
