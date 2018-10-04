@@ -29,6 +29,12 @@
     - [Neural network overview](#neural-network-overview)
     - [Neural network representation](#neural-network-representation)
     - [Computing a NN output](#computing-a-nn-output)
+    - [Vectorizing across multiple examples](#vectorizing-across-multiple-examples)
+    - [Activation functions](#activation-functions)
+    - [Why do we even need an activation function?](#why-do-we-even-need-an-activation-function)
+    - [Derivatives of activation functions](#derivatives-of-activation-functions)
+    - [Gradient Descent for NN](#gradient-descent-for-nn)
+    - [Random Initialization](#random-initialization)
 # Week 1
 ## Introduction
 * AI - impact of AI analagous to impact of Electricity 
@@ -316,4 +322,62 @@ np.maximum(v, 0)
 * We compute $z^{[i]}_j$ for $j^{th}$ node in $i^{th}$ level. Stacking all $z$ at level $i$ into $Z^{[1]}$. 
 * Below picture shows the 4 key lines to compute in a 2-layer NN. Dimensions of Z, W, a and b are also mentioned alongside.
 * ![Computing NN](images/computing-a-nn-output.png)
-* The input layer is very simplistic one. Each input in the dataset is represented as real value. Whereas, in real problems, each input will have multiple features and therefore multi-dimensional.
+* The input layer is very simplistic one. Each input in the dataset is represented as real value (or only one example data set with multiple features). Whereas, in real problems, each input will have multiple features and therefore multi-dimensional.
+
+## Vectorizing across multiple examples
+* In the previous slide, we had only 1 example in the dataset.
+* Given x, we computed $a^{[i]}$ - which corresponds to input at hidden layer $i$.
+* Now we have $m$ examples, $a^{[i](j)}$ corresponds to $j^{th}$ input at layer $i$. Remember the notation. Layer specified in `[]` and input specified in `()`
+* The below slide shows how we vectorize the for-loop.
+* ![vectorize-for-loop](images/vectorizing-across-multiple-examples.png)
+* In all our matrices $X, A, Z$, rows (going top to bottom) maps to the hidden units (or features) and columns (going left to right) maps to the training examples. 
+* Recap
+* Z is also stacked columnwise [$z^{[1]}, z^{[2]}, z^{[3]},...]. If the number of nodes in the hidden units varies, so is the dimension of Z. One thing is little unclear to me: Previously we computed $z^{[1]}$ as (4,1) matrix and $z^{[2]}$ as (1, 1). If we vectorize them, how $z^{[1]}$ and $z^{[2]}$ will be stacked together columnwise? I hope it will be cleared in the coming lectures.
+* ![vectorzing-m-examples](images/Recap-vectorizing-across-m-examples.png)
+
+## Activation functions
+* Alternatives to sigmoid functions
+* Given x, we found $a^{[1]}$ = $sigma(z^{[1]})$. One of the drawback of sigmoid function is that mean is centered around 0.5. It turns out that if mean is centered around 0, it makes it much easier for next layer in the network to compute (more reasoning on this in the coming lectures)
+* $\displaystyle \tanh(z) = \frac{e^z - e^{-z}}{e^z + e^{-z}}$
+* Sigmoid is used pretty much only where binary classification is needed. We use $\tanh$ in the hidden layers and sigmoid in the output layer (because we want output probability to be in range [0, 1]) 
+* But there is a common downside too. If Z is too small or too large, slope is almost 0, therefore gradient descent becomes very slow(Ref to graphs below).
+* ReLU - Rectified Linear Units to the rescue $a = max(0, z)$
+    * Faster learning rate than $\tanh$ or sigmoid activation functions
+    * Because of faster gradient descent
+* Pros/Cons of different activation functions
+* ![pros-cons-activation-functions](images/pros-cons-activation-function.png)
+* One activation function may not suit all applications. So try out different activation functions. 
+
+## Why do we even need an activation function?
+* If there is no activation function, then $a^{[1]}$ is going to simply a linear function ($Wx + b$). As shown in the slide below, product of two linear function is also a linear function
+* ![why-we-need-activation-function](images/why-activation-func-is-needed.png)
+* Per Andrews' comments, linear functions don't produce interesting computations - what does that mean? why the activation function has to be non-linear?
+* - [ ] Follow through the above question
+* Linear functions are used rarely though - e.g. house price prediction (can avoid linear by using ReLU), some compression related issues
+
+## Derivatives of activation functions
+|$g(z)$ | $g\prime(z) = \frac{\partial}{\partial z}g(z)$ |
+--------|-------------------|
+|$\sigma(z)$    | $g(z)(1 - g(z))$       |
+|$\tanh(z)$     | $1 - (g(z))^{2}$       |
+|ReLU = max(0, z)      | 0 if z < 0, 1 if z > 0, undefined if z = 0 |
+|Leaky ReLU = max(0.01z z)  | 0.01 if z < 0, 1 if z > 0 |
+* for ReLU and leaky ReLU, we almost never get z to be exactly 0. we can ignore the undefined case.
+
+## Gradient Descent for NN
+* Starting with single hidden layer.. Forward prop to compute Z an A. Then back prop to compute $\partial w$ and $\partial b$
+* ![gradient descent](images/formulas-derivatives.png)
+* Details of formula derivation in the next video. Important to use `keepdims = True` in `np.sum()` to retain the dimension of `b` after derivation. 
+
+## Random Initialization
+* We initialized parameters to 0 with logistic regression. That will not work with NN. Why?
+* If the parameters are initialized to 0, all hidden units end up computing the same function (all rows in dw ends up as equal). That violates the purpose of NN itself. This problem is called symmetry breaking problem. (I didn't understand the induction based reasoning though. :-()
+* ![random initialization of weights](images/random-initialization.png)
+* We want each unit in the hidden layer to compute different function
+* Solution: initialize the paramters randomly
+* `W = np.random.randn((n, m)) * 0.01`
+    * randn generates random values in gaussian distribution
+    * Additional factor `0.01` is applied to keep value low enough to avoid slower learning rate. If the random value is large, then g(z) will also be large and we will end up in the flat part of the activation curve
+    * Some deep nets may need a different random factor than 0.01. More on this in next week.
+* `b = np.zero(n, 1)` - can be initialized to zero because `b` doesn't suffer from symmetry problem
+* 
