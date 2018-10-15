@@ -34,7 +34,13 @@
     - [Why do we even need an activation function?](#why-do-we-even-need-an-activation-function)
     - [Derivatives of activation functions](#derivatives-of-activation-functions)
     - [Gradient Descent for NN](#gradient-descent-for-nn)
+    - [Backpropagation intuition](#backpropagation-intuition)
     - [Random Initialization](#random-initialization)
+    - [TODO](#todo-1)
+    - [Notes from Programming assignment](#notes-from-programming-assignment)
+    - [Interview with Ian Goodfellow](#interview-with-ian-goodfellow)
+    - [Summary](#summary-1)
+    - [Resources](#resources-1)
 # Week 1
 ## Introduction
 * AI - impact of AI analagous to impact of Electricity 
@@ -313,7 +319,7 @@ np.maximum(v, 0)
 ## Neural network representation
 * Building a 2-layer neural network
     * Input Layer --> Hidden Layer --> Output Layer
-* Parameters: $w^{[i]}$, $b^{[i]}$ at level $i$. Dimension of $w$ and $b$ at level $i$ is determined by (#units_in_output_layer, #units_in_prev_layer)
+* Parameters: $w^{[i]}$, $b^{[i]}$ at level $i$. Dimension of $w$ at level $i$ is determined by (#units_in_output_layer, #units_in_prev_layer) and of $b$ is determined by (#units_in_output_layer, #units_in_next_layer)
 * In a single layer neural network, $w$ was a 1-D vector. Whereas, in a multilayer network, it is 2-D matrix. Each node in a layer will get its own $w$ vector.
 * ![neural network representation](images/neural-network-representation.png)
 
@@ -369,6 +375,10 @@ np.maximum(v, 0)
 * ![gradient descent](images/formulas-derivatives.png)
 * Details of formula derivation in the next video. Important to use `keepdims = True` in `np.sum()` to retain the dimension of `b` after derivation. 
 
+## Backpropagation intuition
+* Computing the gradient
+* ![bp intuition](images/backpropagation-intuition.png)
+* little difficult to recollect why $\partial z = A - Y$, uses chain rule of calculus. god only knows what that means!
 ## Random Initialization
 * We initialized parameters to 0 with logistic regression. That will not work with NN. Why?
 * If the parameters are initialized to 0, all hidden units end up computing the same function (all rows in dw ends up as equal). That violates the purpose of NN itself. This problem is called symmetry breaking problem. (I didn't understand the induction based reasoning though. :-()
@@ -380,3 +390,37 @@ np.maximum(v, 0)
     * Additional factor `0.01` is applied to keep value low enough to avoid slower learning rate. If the random value is large, then g(z) will also be large and we will end up in the flat part of the activation curve
     * Some deep nets may need a different random factor than 0.01. More on this in next week.
 * `b = np.zero(n, 1)` - can be initialized to zero because `b` doesn't suffer from symmetry problem
+
+## TODO
+- [ ] Symmetry breaking problem - explain in simple terms
+- [ ] Study resources links at least once
+- [ ] Post Summary
+
+## Notes from Programming assignment
+- Why W generated from np.random.rand() has to be multiplied by 0.01 [here](#4.2---Initialize-the-model's-parameters)?
+    - Additional factor `0.01` is applied to keep value low enough to avoid slower learning rate. If the random value is large, then g(z) will also be large and we will end up in the flat part of the activation curve
+- In [computing cost](#4.3---The-Loop), what is cross entropy cost? How does that value come so close to the actual cost function?
+    - Not sure why cross entropy was used. but using the actual cost formula only worked. The cross entropy formula surprisingly gave closer results though.
+- How is the formula for accuracy derived? The forumla used in accuracy calculation is:
+    - $\displaystyle \frac{Y.P^T + (1-Y).(1-P)^T}{m}$
+    - $Y.P^T$ - finds the number of training examples we correctly classified as 1
+    - $(1-Y).(1-P)^T$ - finds the number of training examples we correctly classified as 0.
+    - Average the above two over m training examples, we get the total accuracy
+- Derivative of activation functions
+    - Tanh - $\frac{\partial}{\partial x} tanh(x) = (1 - tanh(x)^2)$ - details [here](https://socratic.org/questions/what-is-the-derivative-of-tanh-x)
+    - ReLU - Examples [here](https://kawahara.ca/what-is-the-derivative-of-relu/)
+
+## Interview with Ian Goodfellow
+* GANS - [Generative Adversarial Networks](https://medium.com/@Moscow25/gans-will-change-the-world-7ed6ae8515ca) generative modeling - based on training examples, generate more data that resembles the training data
+* Co-authored the [Deep Learning book](http://www.deeplearningbook.org/)
+    * Focuses on basic math that are very essential for Deep Learning
+
+## Summary
+
+## Resources
+* [Demsystifying Deep CNN](http://scs.ryerson.ca/~aharley/neural-networks/)
+* [NN Case study](http://cs231n.github.io/neural-networks-case-study/)
+* [Back Propagation Crash Course](https://google-developers.appspot.com/machine-learning/crash-course/backprop-scroll/)
+* [Calculus behind back prop](http://colah.github.io/posts/2015-08-Backprop/)
+* [Blog from Kawahara](https://kawahara.ca/what-is-the-derivative-of-relu/) - A good blog on DL/ML that I stumbled upon while looking for partial derivatives of ReLU - has some recommendations for books too.
+* [Matplot lib tutorial](http://www.labri.fr/perso/nrougier/teaching/matplotlib/)
