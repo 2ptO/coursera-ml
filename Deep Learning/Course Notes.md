@@ -319,13 +319,13 @@ np.maximum(v, 0)
 ## Neural network representation
 * Building a 2-layer neural network
     * Input Layer --> Hidden Layer --> Output Layer
-* Parameters: $w^{[i]}$, $b^{[i]}$ at level $i$. Dimension of $w$ at level $i$ is determined by (#units_in_output_layer, #units_in_prev_layer) and of $b$ is determined by (#units_in_output_layer, #units_in_next_layer)
+* Parameters: $w^{[i]}$, $b^{[i]}$ at layer $i$. Dimension of $w$ at layer $i$ is determined by (#units_in_output_layer, #units_in_prev_layer) and of $b$ is determined by (#units_in_output_layer, #units_in_next_layer)
 * In a single layer neural network, $w$ was a 1-D vector. Whereas, in a multilayer network, it is 2-D matrix. Each node in a layer will get its own $w$ vector.
 * ![neural network representation](images/neural-network-representation.png)
 
 ## Computing a NN output
 * Stacking the multiple units into one to perform vectorized computations
-* We compute $z^{[i]}_j$ for $j^{th}$ node in $i^{th}$ level. Stacking all $z$ at level $i$ into $Z^{[1]}$. 
+* We compute $z^{[i]}_j$ for $j^{th}$ node in $i^{th}$ layer. Stacking all $z$ at layer $i$ into $Z^{[1]}$. 
 * Below picture shows the 4 key lines to compute in a 2-layer NN. Dimensions of Z, W, a and b are also mentioned alongside.
 * ![Computing NN](images/computing-a-nn-output.png)
 * The input layer is very simplistic one. Each input in the dataset is represented as real value (or only one example data set with multiple features). Whereas, in real problems, each input will have multiple features and therefore multi-dimensional.
@@ -358,7 +358,7 @@ np.maximum(v, 0)
 * If there is no activation function, then $a^{[1]}$ is going to simply a linear function ($Wx + b$). As shown in the slide below, product of two linear function is also a linear function
 * ![why-we-need-activation-function](images/why-activation-func-is-needed.png)
 * Per Andrews' comments, linear functions don't produce interesting computations - what does that mean? why the activation function has to be non-linear?
-* - [ ] Follow through the above question
+* - [x] ~~Follow through the above question~~ - [Update] By mathematical definition, linear is something that can be fit on a straight line in a graph. That implies that values we plot are must be 1-D. In reality, solutions to most problems are not linear in nature. Hence using activation functions to turn linear functions into non-linear 
 * Linear functions are used rarely though - e.g. house price prediction (can avoid linear by using ReLU), some compression related issues
 
 ## Derivatives of activation functions
@@ -416,6 +416,36 @@ np.maximum(v, 0)
     * Focuses on basic math that are very essential for Deep Learning
 
 ## Summary
+* Finished last week with single layer NN with one unit in the hidden layer. We extended that to multi unit hidden layer. 
+* Important parameters
+    * `W` - weights - one for each layer of shape = (#units_in_cur_layer, #units_in_input), initialized to random values.
+        * Why random values? - If $w$ is initialized to 0, then all units in a layer will produce the same result. Not interesting computations. Keep random values close to zero by multiplying by a factor of $0.01$. If the values are large, then we will end up at the top of the activation curve with a flat descent.
+    * `b` - bias - one for each layer of shape = (#units_in_cur_layer, #units_in_next), initialized to zeros.
+* Forward propagation
+    * Compute Z, A for each training example. Vectorized them for efficient computation.
+    * $Z = W^T.X + b$, linear function turned into non-linear using $A = g(Z)$, where A is the activation function
+    * We compute Z, A for every layer in the network, starting from the first hidden layer to the last output layer. 
+    * e.g. $Z^{[1]} = W^{[1]T}.X + b$, $A^{[1]} = g(Z^{[1]})$, when implementing in the code, we do not take transpose of $W$ if the dimensions are already taken care.
+* Activation Functions
+    * Why activation function? Linear functions don't produce interesting data. In reality, solution to most problems are non-linear. They do not fit on a straight line in a graph.
+    * Different activation functions for different problems. Have to be tested to find the right one. Different curve and mean for different activation functions.
+        * Sigmoid
+        * Tanh
+        * ReLU - Rectified Linear Units
+        * Leaky ReLU
+    * Sigmoid is mostly used only in the final layer when the output has to be 0 or 1. In other layers, we use $tanh$ or ReLU.
+* Backpropagation
+    * Finding the gradient descents from the results of forward propagation. Update the parameters $W$ and $b$ using the gradient descents.
+    * From Z, A compute $\partial Z$ and $\partial A$
+    * Formulas [here](#Backpropagation-intuition)
+* Programming assignment - built a model to classify planar data (flower like structure)
+    * Model
+        1. Initialize the parameters based on input X, output Y and number of hidden units in the hidden layer
+        2. Calculate A, Z using forward propagation
+        3. Calculate the gradient descents using backward propagation
+        4. Update the parameters based on the gradient descent and learning rate
+        5. Repeat
+   * Changing the activation function will affect both forward and backward prop as the derivative of the activation function also changes.
 
 ## Resources
 * [Demsystifying Deep CNN](http://scs.ryerson.ca/~aharley/neural-networks/)
