@@ -41,6 +41,13 @@
     - [Interview with Ian Goodfellow](#interview-with-ian-goodfellow)
     - [Summary](#summary-1)
     - [Resources](#resources-1)
+- [Week 4](#week-4)
+    - [Deep L-layer neural network](#deep-l-layer-neural-network)
+    - [Forward propagation](#forward-propagation)
+    - [Getting the matrix dimensions right](#getting-the-matrix-dimensions-right)
+    - [Why deep representations?](#why-deep-representations)
+    - [Building blocks of deep neural networks](#building-blocks-of-deep-neural-networks)
+    - [TODO](#todo-2)
 # Week 1
 ## Introduction
 * AI - impact of AI analagous to impact of Electricity 
@@ -454,3 +461,52 @@ np.maximum(v, 0)
 * [Calculus behind back prop](http://colah.github.io/posts/2015-08-Backprop/)
 * [Blog from Kawahara](https://kawahara.ca/what-is-the-derivative-of-relu/) - A good blog on DL/ML that I stumbled upon while looking for partial derivatives of ReLU - has some recommendations for books too.
 * [Matplot lib tutorial](http://www.labri.fr/perso/nrougier/teaching/matplotlib/)
+
+# Week 4
+## Deep L-layer neural network
+* What is a deep neural network?
+    * Shallow learning - linear regression, logistic regression with no hidden layers
+    * Deep learning - multiple hidden layers between the input and output
+* Notations:
+    * $L$ - number of layers in the network
+    * $n^{[l]}$ - number of units in layer $l$
+    * $a^{l} = g^{[l]}(z^{[l]}$  activations in layer $l$
+    * Refer to course website for full list of notations
+
+## Forward propagation
+* Generalizing $z$ as $z^{[l]} = w^{[l]}a^{[l-1]} + b^{[l]}$
+* Compute $Z$ ($z^{[l]}$ stacked in column vector) and $A$ ($a^{[l]}$ tacked column wise) for every layer
+
+## Getting the matrix dimensions right
+- Of parameters $W$ and $b$
+- General rule of thumb for single input
+    - $w^{[l]}$ : ($n^{[l]}, n^{[l-1]}$)
+    - $b^{[l]}$ : ($n^{[l]}, 1$)
+- [ ] Add image here
+- Vectorized implementation
+    - $Z^{[1] = W^{[1]}.X + b^{[1]}}$
+    - Z : $(n^{[1]}, m)
+    - W : $(n^{[1]}, n^{[0]})
+    - X : $(n^{[0]}, m)
+    - b : $(n^{[1]}, 1), broadcasted by python to $(n^{[1]}, m)
+    - $\partial Z^{[l]}$ and $\partial A^{[l]}$ are of same dimension as $Z$ and $A$ that is $(n^{[l]}, m)
+
+## Why deep representations?
+- Example of facial recognition - breaking into sub problems - different neurons for each sub problem (e.g. identifying edges, nose, eyes, face)
+- Speech recognition
+- Common analogy between Deep Learning and Human brain recognition of speech and image
+- Circuit theory and deep learning
+    - small L-layer deep neural network versus shallow network
+- [ ] Add image
+
+## Building blocks of deep neural networks
+- Parameters: W, b
+- Forward: Input $a^{[l-1]}$ , output $a^{[l]}$
+    - $Z = W.a + b$, cache $Z^{[l]}$
+- Backward: Input $\partial a^{[l]}$, output $\partial a^{[l-1]}$
+    - Cache $\partial w^{[l]}$ and $\partial b^{[l]}$
+    - Update $w$ and $b$
+- [ ] Add image
+- 
+## TODO
+- [ ] Add reference link to list of notations
