@@ -47,6 +47,9 @@
     - [Getting the matrix dimensions right](#getting-the-matrix-dimensions-right)
     - [Why deep representations?](#why-deep-representations)
     - [Building blocks of deep neural networks](#building-blocks-of-deep-neural-networks)
+    - [Forward and Backward Propagation](#forward-and-backward-propagation)
+    - [Parameters Vs Hyperparameters](#parameters-vs-hyperparameters)
+    - [Deep Learning Vs Human Brain](#deep-learning-vs-human-brain)
     - [TODO](#todo-2)
 # Week 1
 ## Introduction
@@ -482,7 +485,7 @@ np.maximum(v, 0)
 - General rule of thumb for single input
     - $w^{[l]}$ : ($n^{[l]}, n^{[l-1]}$)
     - $b^{[l]}$ : ($n^{[l]}, 1$)
-- [ ] Add image here
+- ![Parameter dimensions](images/parameter-dimensions.png)
 - Vectorized implementation
     - $Z^{[1] = W^{[1]}.X + b^{[1]}}$
     - Z : $(n^{[1]}, m)
@@ -497,7 +500,7 @@ np.maximum(v, 0)
 - Common analogy between Deep Learning and Human brain recognition of speech and image
 - Circuit theory and deep learning
     - small L-layer deep neural network versus shallow network
-- [ ] Add image
+    - Why shallow networks are expensive to build?
 
 ## Building blocks of deep neural networks
 - Parameters: W, b
@@ -506,7 +509,37 @@ np.maximum(v, 0)
 - Backward: Input $\partial a^{[l]}$, output $\partial a^{[l-1]}$
     - Cache $\partial w^{[l]}$ and $\partial b^{[l]}$
     - Update $w$ and $b$
-- [ ] Add image
-- 
+- ![Building blocks](images/Forward-and-backward-functions.png)
+
+## Forward and Backward Propagation
+- Forward prop
+    - Input $A^{[l-1]}$, output $Z^{[l]}$, $A^{[l]}$
+- Backward prop
+    - Input $da^{[l]}$, output $da^{l-1}$, $dW^{[l]}$, $db^{[l]}$
+    - All calculations vectorized. Refer to the formulas from the previous week
+- ![Forward and Back prop blocks](images/Forward-and-backward-blocks.png)
+- Lot of complexities of NN comes from the inherent complexities of the data more than the algorithm/code itself.
+
+## Parameters Vs Hyperparameters
+- Parameters
+    - $W^{[1]}, b^{[1]}, W^{[2]}, b^{[2]} ... $
+- What are hyperparameters?
+    - Learning rate $\alpha$
+    - #iterations
+    - #hidden layers $L$
+    - #hidden units ($n^{[1]}, n^{[2]}...$)
+    - choice of activation function
+- Other hyperparameters (advanced)
+    - momentum, regularization etc.. 
+- Learning rate $\alpha$ used to be categorized under parameter interchangeably. for consistency, we will keep it under hyperparameter
+- Applied DL is highly empirical 
+    - Idea ==> Code ==> Experiment ==> Idea ==> Code ==> Experiment ==> Repeat
+- Try out many different values for the hyperparameters
+
+## Deep Learning Vs Human Brain
+- Logistic Regression Vs Single Neuron in our brain. How a single neuron learns is still a mystery.
+- Some aspects of deep learning is equated to human brain.. but we are far away from learning how our brain actually works.
+- ![DL Vs Human Brain analogy](images/Deep-learning-and-human-brain.png)
+
 ## TODO
 - [ ] Add reference link to list of notations
