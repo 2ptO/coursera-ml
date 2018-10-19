@@ -1,4 +1,5 @@
 # Deep Learning Course Notes
+
 - [Deep Learning Course Notes](#deep-learning-course-notes)
 - [Week 1](#week-1)
     - [Introduction](#introduction)
@@ -18,6 +19,7 @@
     - [Logistic Regression on $m$ examples](#logistic-regression-on-m-examples)
     - [Vectorization](#vectorization)
     - [More vectorization examples](#more-vectorization-examples)
+- [many more](#many-more)
     - [Vectorizing Logistic Regression](#vectorizing-logistic-regression)
     - [Vectorizing Gradient Descent](#vectorizing-gradient-descent)
     - [Programming assignment](#programming-assignment)
@@ -63,14 +65,16 @@
     * Shallow learning vs Deep learning
 
 ## Neural networks intuition
-* E.g. housing price prediction
-* Consider each node as a ReLU (Rectified Linear Unit)..can sometimes use non-linear function too, depending on the problem in hand
-![Housing Price Prediction](images/neural-networks-intuition.png)
-* Applications in supervised learning
+
+- E.g. housing price prediction
+- Consider each node as a ReLU (Rectified Linear Unit)..can sometimes use non-linear function too, depending on the problem in hand
+- ![Housing Price Prediction](images/neural-networks-intuition.png)
+- Applications in supervised learning
 
 ## Supervise Learning with NN
-* Lots of famous applications
-* Using standard neural networks
+
+- Lots of famous applications
+- Using standard neural networks
     * Real Estate (house price prediction)
     * Online ads based on user info - predict click
 * Using Convolution Neural Network (CNN) 
@@ -473,12 +477,12 @@ np.maximum(v, 0)
 * Notations:
     * $L$ - number of layers in the network
     * $n^{[l]}$ - number of units in layer $l$
-    * $a^{l} = g^{[l]}(z^{[l]}$  activations in layer $l$
-    * Refer to course website for full list of notations
+    * $a^{l} = g^{[l]}(z^{[l]})$  activations in layer $l$
+    * Refer to [this list](references/NN_Notations.pdf) for full list of notations
 
 ## Forward propagation
 * Generalizing $z$ as $z^{[l]} = w^{[l]}a^{[l-1]} + b^{[l]}$
-* Compute $Z$ ($z^{[l]}$ stacked in column vector) and $A$ ($a^{[l]}$ tacked column wise) for every layer
+* Compute $Z$ ($z^{[l]}$ stacked in column vector) and $A$ ($a^{[l]}$ stacked column wise) for every layer
 
 ## Getting the matrix dimensions right
 - Of parameters $W$ and $b$
@@ -488,13 +492,14 @@ np.maximum(v, 0)
 - ![Parameter dimensions](images/parameter-dimensions.png)
 - Vectorized implementation
     - $Z^{[1] = W^{[1]}.X + b^{[1]}}$
-    - Z : $(n^{[1]}, m)
-    - W : $(n^{[1]}, n^{[0]})
-    - X : $(n^{[0]}, m)
-    - b : $(n^{[1]}, 1), broadcasted by python to $(n^{[1]}, m)
-    - $\partial Z^{[l]}$ and $\partial A^{[l]}$ are of same dimension as $Z$ and $A$ that is $(n^{[l]}, m)
+    - Z : $(n^{[1]}, m)$
+    - W : $(n^{[1]}, n^{[0]})$
+    - X : $(n^{[0]}, m)$
+    - b : $(n^{[1]}, 1)$, broadcasted by python to $(n^{[1]}, m)$
+    - $\partial Z^{[l]}$ and $\partial A^{[l]}$ are of same dimension as $Z$ and $A$ that is $(n^{[l]}, m)$
 
 ## Why deep representations?
+
 - Example of facial recognition - breaking into sub problems - different neurons for each sub problem (e.g. identifying edges, nose, eyes, face)
 - Speech recognition
 - Common analogy between Deep Learning and Human brain recognition of speech and image
@@ -503,6 +508,7 @@ np.maximum(v, 0)
     - Why shallow networks are expensive to build?
 
 ## Building blocks of deep neural networks
+
 - Parameters: W, b
 - Forward: Input $a^{[l-1]}$ , output $a^{[l]}$
     - $Z = W.a + b$, cache $Z^{[l]}$
@@ -512,6 +518,7 @@ np.maximum(v, 0)
 - ![Building blocks](images/Forward-and-backward-functions.png)
 
 ## Forward and Backward Propagation
+
 - Forward prop
     - Input $A^{[l-1]}$, output $Z^{[l]}$, $A^{[l]}$
 - Backward prop
@@ -521,8 +528,9 @@ np.maximum(v, 0)
 - Lot of complexities of NN comes from the inherent complexities of the data more than the algorithm/code itself.
 
 ## Parameters Vs Hyperparameters
+
 - Parameters
-    - $W^{[1]}, b^{[1]}, W^{[2]}, b^{[2]} ... $
+    - $W^{[1]}, b^{[1]}, W^{[2]}, b^{[2]} ...$
 - What are hyperparameters?
     - Learning rate $\alpha$
     - #iterations
@@ -542,4 +550,4 @@ np.maximum(v, 0)
 - ![DL Vs Human Brain analogy](images/Deep-learning-and-human-brain.png)
 
 ## TODO
-- [ ] Add reference link to list of notations
+- [x] Add reference link to list of notations
