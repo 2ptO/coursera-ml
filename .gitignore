@@ -1,4 +1,4 @@
 *.zip
 .DS_Store
 .ipynb_checkpoints
-./Deep Learning/hands-on/classworks/
+Deep Learning/hands-on/classworks/
