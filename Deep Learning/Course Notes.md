@@ -2,6 +2,7 @@
 
 - [Deep Learning Course Notes](#deep-learning-course-notes)
 - [Week 1](#week-1)
+    - [Disclaimer](#disclaimer)
     - [Introduction](#introduction)
     - [Neural networks intuition](#neural-networks-intuition)
     - [Supervise Learning with NN](#supervise-learning-with-nn)
@@ -19,13 +20,12 @@
     - [Logistic Regression on $m$ examples](#logistic-regression-on-m-examples)
     - [Vectorization](#vectorization)
     - [More vectorization examples](#more-vectorization-examples)
-- [many more](#many-more)
     - [Vectorizing Logistic Regression](#vectorizing-logistic-regression)
     - [Vectorizing Gradient Descent](#vectorizing-gradient-descent)
     - [Programming assignment](#programming-assignment)
     - [Interview with Pieter Abbeel](#interview-with-pieter-abbeel)
     - [Resources](#resources)
-    - [Summary](#summary)
+    - [Summary - Week2](#summary---week2)
     - [TODO](#todo)
 - [Week 3 - Shallow Neural Networks](#week-3---shallow-neural-networks)
     - [Neural network overview](#neural-network-overview)
@@ -41,7 +41,7 @@
     - [TODO](#todo-1)
     - [Notes from Programming assignment](#notes-from-programming-assignment)
     - [Interview with Ian Goodfellow](#interview-with-ian-goodfellow)
-    - [Summary](#summary-1)
+    - [Summary - Week3](#summary---week3)
     - [Resources](#resources-1)
 - [Week 4](#week-4)
     - [Deep L-layer neural network](#deep-l-layer-neural-network)
@@ -53,7 +53,11 @@
     - [Parameters Vs Hyperparameters](#parameters-vs-hyperparameters)
     - [Deep Learning Vs Human Brain](#deep-learning-vs-human-brain)
     - [TODO](#todo-2)
+    - [Summary - Week4](#summary---week4)
+- [Overall Summary](#overall-summary)
 # Week 1
+## Disclaimer
+The screenshots I posted in this page are taken while watching the videos of this course. I used them here only as additional resource to learn this course better. Copyrights/ownership of the contents in those screenshots solely belong to Dr.Andrew Ng and other course instructors.
 ## Introduction
 * AI - impact of AI analagous to impact of Electricity 
 * Specialization outline
@@ -105,7 +109,7 @@
 * Inspired from brain science.. background in Physiology and Physics.. then some psycology..then carpentry.. then AI
 * Co-invented back propagation algorithm
 * Graph representation <--> Feature vector
-* Boltzman machine - Geoffrey considers this as his best - Restrcited Boltzman machine 
+* Boltzman machine - Geoffrey considers this as his best - Restricted Boltzman machine 
 * Deep Belief Nets
 * ReLU - somewhat equivalent to stacked logistic units
 * Backprop and Brain - Geoffrey is working on a paper..is brain really using backprop? referred to brain plasticity in connection to how brain learns
@@ -232,17 +236,17 @@ u = np.zeros((n, 1)) #is (n, 1) a tuple or arg?
 for i in range(n):
     u[i] = math.exp(v[i])
 ```
-* Vectorized method
+* Vectorized method to find exponent
 ```python
 import numpy as np
 u = np.exp(v)
 ```
 * Other vectorized functions
 ```python
-np.log(v)
-np.abs(v)
-np.maximum(v, 0)
-# many more
+    np.log(v)
+    np.abs(v)
+    np.maximum(v, 0)
+    # many more
 ```
 * Vectorizing logistic regression - begins with vectorizing inner loop
 * ![Vectorizing logistic regression](images/vectorizing-logistic-regression-inner-loop.png)
@@ -290,7 +294,7 @@ np.maximum(v, 0)
         * Load the markdown file into a iPython notebook at the end of the course. IPython supports LaTeX equations and Github renders IPython notebook quite effectively.
 * [Machine learning is fun - Building a CNN image classifier](https://medium.com/@ageitgey/machine-learning-is-fun-part-3-deep-learning-and-convolutional-neural-networks-f40359318721)
 
-## Summary
+## Summary - Week2
 * This week is all about logistic regression, specifically binary classification
 * Given input X, classify it as 0 or 1. If that matches with given expected value Y, then we predicted correctly.
 * Some key terms and concepts are:
@@ -408,7 +412,7 @@ np.maximum(v, 0)
 ## TODO
 - [ ] Symmetry breaking problem - explain in simple terms
 - [ ] Study resources links at least once
-- [ ] Post Summary
+- [x] Post Summary
 
 ## Notes from Programming assignment
 - Why W generated from np.random.rand() has to be multiplied by 0.01 [here](#4.2---Initialize-the-model's-parameters)?
@@ -429,7 +433,7 @@ np.maximum(v, 0)
 * Co-authored the [Deep Learning book](http://www.deeplearningbook.org/)
     * Focuses on basic math that are very essential for Deep Learning
 
-## Summary
+## Summary - Week3
 * Finished last week with single layer NN with one unit in the hidden layer. We extended that to multi unit hidden layer. 
 * Important parameters
     * `W` - weights - one for each layer of shape = (#units_in_cur_layer, #units_in_input), initialized to random values.
@@ -551,3 +555,54 @@ np.maximum(v, 0)
 
 ## TODO
 - [x] Add reference link to list of notations
+
+## Summary - Week4
+
+- This week is all about how we transform our 2-layer network that we built over the last few weeks into a L-layer neural network.
+- In the programming assignment, we developed a 2-layer network first and then extended it to L-layer and then used to classify cat images.
+- The building blocks of a L-layer model are:
+```python
+def initialize_parameters_deep(layers_dims):
+    ...
+    # returns a dictionary of parameters: 
+    #   W - weight matrix, b - bias vector, for every hidden layer
+    # W.shape = (#units_in_curr_layer, #units_in_prev_layer)
+    # b.shape = (#units_in_curr_layer, #units_in_next_layer)
+    # W - values initialized to random values in Guassian distribution. Often multiplied by 0.01 (commonly used, but can vary). Refer to notes on why it can't be initialized to 0.
+    # b - values initialized to 0
+    return parameters 
+def L_model_forward(X, parameters):
+    ...
+    # compute linear_activation_forward() for every layer
+    # X - input data of shape (n, m), n - #features, m - #training examples
+    # iteratively find A, Z of every hidden layer. 
+    # activation_function = "relu" or "tanh" : layers l = 1..L-1
+    #                     = "sigmoid" : layer = L
+    return AL, caches
+def compute_cost(AL, Y):
+    ...
+    # Computes loss/cost based on actual truth values (Y) vs the computed truth values (AL)
+    return cost
+def L_model_backward(AL, Y, caches):
+    ...
+    # compute linear_activation_backward() for every hidden layer
+    # AL same shape as Y. 
+    # caches - list of A,Z for every layer computed from L_model_forward()
+    # 
+    # find dA, dW, db for every layer from L through 1.
+    #   activation_function = sigmoid if layer = L
+    #                       = relu or tanh if layer = L-1..1
+    # grads - dictionary of dA, dW, db for every layer.
+    return grads
+def update_parameters(parameters, grads, learning_rate):
+    ...
+    # update parameters W, b based on the gradient descents and the learning rate.
+    # W = W - (learning_rate) * dW
+    # b = b - (learning-rate) * db
+    return parameters
+```
+- Given X and number of layers and number of hidden units in every layer, we fit the data to our model by following the above building blocks.
+
+# Overall Summary
+
+This is excellent introduction to Deep Learning. Complex concepts were broken down in much simpler bite sized concepts that were easier to understand. [Week-1](#week-1) focused on the history and brief introduction to Deep Learning. [Week-2](#summary---week2) focused on simple neural network with logistic regression, intuitions behind forward propagation, derivatives and backward propagation, vectorization of the computations. Built a simple logistic regression based on neural network to classify images to cat and non-cat. [Week-3](#summary---week3) built on the learning from week2, developed into a shallow neural network with 2-layers. Some concepts covered in this week: Computation graph for forward and backward propagation, finding dimensions of parameters W and b, different activations and intuition behind each one, planar data classifiction in the prog assignment. [Week-4](#summary---week4) focused on building a Deep Neural Net based on the learning from week1-3. Learnt the basic building blocks of a L-layer model and how each block operates. Working on the course-notes and the programming assignemnts also taught me bunch of new things in Markdown, matplotlib, numpy and sklearn. The quizzes and programming assignment in each week were easier to follow and solve. It could have been little more involved, but I guess the instructors kept it that way intentionally. Nonetheless, they were very helpful to solidify the learning from the lecture videos. I could not upload the solutions to programming assignment due to Coursera Honor Code restrictions.
