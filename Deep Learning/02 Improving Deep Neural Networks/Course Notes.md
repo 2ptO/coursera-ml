@@ -23,7 +23,8 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 - Difficulties in plotting decision boundary in higher dimensions
 - Find the error in train set and dev set. If the error on dev set is significantly higher than the train set, that signals some level of overfitting to the train set. High Variance.
 - If the training set error itself is high, then classifier is not fitting the train set properly. Underfitting. High Bias.
-- Examples
+- Some examples of diff train and dev set errors and their meaning.
+
 | Train set error | dev set error | Bias | Variance | Fitting |
   --------------- | ------------- | ---- | -------- | ------- |
 | 1 %             |       11%     | Low  |  High    | over    |
