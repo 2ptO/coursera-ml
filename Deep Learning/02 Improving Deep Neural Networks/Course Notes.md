@@ -18,6 +18,7 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
     - [Numerical approximation of gradients](#numerical-approximation-of-gradients)
     - [Gradient checking](#gradient-checking)
     - [Gradient Checking Implementation Notes](#gradient-checking-implementation-notes)
+  - [Summary](#summary)
   - [References](#references)
 
 ## Week 1 - Setting up your ML application
@@ -125,9 +126,10 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 
 - Why dropout? - to reduce overfitting and improve regularization
 - Intuition - Can't rely on any one feature, so spreading weights
-- Spreading the weights will shrink the $\parallel w \parallel^2$ - squared norm of the weights - that acheives the similar effect as L2 regularization
+- Spreading the weights will shrink the $\parallel w \parallel^2$ - squared norm of the weights - that acheives the similar effect as L2 regularization.
+- When you shut some neurons down, you actually modify your model. The idea behind drop-out is that at each iteration, you train a different model that uses only a subset of your neurons. With dropout, your neurons thus become less sensitive to the activation of one other specific neuron, because that other neuron might be shut down at any time.
 - ![why-dropout-works](images/why-dropout-works.png)
-- Dropout can be applied to input technically, but not recommended.
+- Dropout can be applied to input layer technically, but not recommended.
 - Can very the keep probability for every layer. For layers that are not expected to overfit, keep-probability can be set to a high value.
 - Dropout often applied in computer vision, because lack of high precision data in the training set.
 - Side effect: Cost function J becomes little indeterministic because of random dropouts. Makes debugging little difficult. Turn off dropout and calculate cost curve to debug and then turn it on.
@@ -193,8 +195,8 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 - Reshape all $W$ and $b$ into a giant vector $\theta$ - make cost function $J$ as a function of $\theta$ instead of $W$ and $b$
 - Likewise, reshape derivatives of $W$ and $b$ as well into $\partial \theta$
 - Take $\theta$ from every iteration, find $\partial \theta_{approx}[i]$
-- $\partial \theta[i] = \frac {\partial J}{\partial \theta_i}$
-- To validate: measure how close $\partial \theta_{approx}$ is to $\partial \theta$. How to measure this? Euclidean distance is the key.
+  $$ \frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} $$
+- To validate: measure how close $\partial \theta_{approx}$ is to $\partial \theta$ (i.e. flattened vector of actual gradients computed from back propagation). How to measure this? Euclidean distance is the key.
 - ![gradient-checking](images/Gradient-checking.png)
 - The ratio of Euclidean distance should be close to the $\epsilon$ as possible for a good result
 - Very effective in catching bugs in the implementation
@@ -208,6 +210,38 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 
 ---
 
+## Summary
+
+- Split datasets into train, dev and test before fitting the model. Typical ratio used to be 60:20:20, now most applications use 98:1:1 (can vary). Why we split?
+- To improve overall accuracy by reducing the bias and variance of our model. Bias & Variance can have different impacts on the model based on how low and how high they are. High variance tells us that a model fits the training set perfectly, but fails to generalize it test set. That is also called **overfitting**. How can we fix that?
+- **Regularization** - penalize some of the units in the neural network to avoid overfitting to the training set. It starts from the cost function. Since gradients are calculated based on the cost  function, we have to regularize the gradients as well. Regularizing gradients will negatively impact the weights as well because we update the parameters (weights and bias) after backpropagation. That's called **weight decay**
+- Methods of regularization
+  - L2 regularization (using L2 norm). Uses the hyperparameter $\lambda$
+  - Dropout regularization (detailed below)
+  - Data augmentation - augment existing training data to generate more training data which reduces the overfitting.
+  - Early Stopping - Plot the cost curve and stop at the lowest point.
+- **Inverted Dropout** is the most common droput method. Randomly shutdown some units in the network for each iteration. *keep_probability* determines the percentage of nodes to shutdown in each iteration. It is also a hyperparameter. This technique reduces the dependencies of one neuron to other in the model. Use it only during training time, not during test time.
+- Normalization - to keep the all examples on the same scale. Different feature may have different units. Makes it slower to converge. Normalizing the mean and variance helps to converge faster.
+- Gradients can some times explode or vanish exponentially depending on the weights. Initializing random values to the weight matrix itself a big research topic. Different activation functions have different initialization factors. Famous initializations: Xavier initialization, He initialization
+- After applying regularization and normalization techniques, how can we validate that implementation is right? Especially back propagation.
+- **Numerical approximation by gradient checking** - mathematical verification of the gradients through approximation. Approximate the parameters (weights and bias) and find the Euclidean distance between the computed gradients and the approximated gradients. A good implementation will have a distance close to $10^{-7}$. Gradient checking is computationally expensive, so we use only to verify and then turn it off during actual training time.
+
+---
+
 ## References
 
 - [Enabling private emails in github commits](https://stackoverflow.com/questions/43378060/meaning-of-the-github-message-push-declined-due-to-email-privacy-restrictions)
+- When running the programming exercise notebook locally, it results in an error due to a small bug in plotting. Fixed that with the help of this [link](https://stackoverflow.com/questions/49840380/matplotlib-scatter-typeerror-unhashable-type-numpy-ndarray).
+
+References noted while working on the programming assignemnt.
+
+- Xavier Initialization References
+  - [Andy's Blog](http://andyljones.tumblr.com/post/110998971763/an-explanation-of-xavier-initialization)
+  - [Question on Quora](https://www.quora.com/What-is-an-intuitive-explanation-of-the-Xavier-Initialization-for-Deep-Neural-Networks)
+  - [Original Research Paper from Xavier and Yoshua Bengio](http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf)
+- [Cross entropy cost explained](https://www.youtube.com/watch?v=ErfnhcEV1O8) - In simple terms, this is nothing but the disorder between the calculated truths (AL) versus the ground truth (Y).
+- Why np.random.rand() instead of np.random.randn() in calculating the dropout matrix $d$?
+  - random.rand() picks samples from uniform distribution in [0, 1] (aka Normal distribution)
+  - random.randn() picks samples from standard normal distribution (aka Guassian Distribution) with a mean of 0 and variance of 1. Random sample can even go even below 0 here. So we cannot use this in places where we want the values to reflect probability.
+  - Thus we use random.rand() to generate dropout matrices.
+  - Some references to [Standard normal distribution](http://mathworld.wolfram.com/StandardNormalDistribution.html) and [Normal distribution](http://mathworld.wolfram.com/NormalDistribution.html)
