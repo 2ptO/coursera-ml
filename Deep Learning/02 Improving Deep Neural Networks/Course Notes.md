@@ -237,8 +237,6 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 - After applying regularization and normalization techniques, how can we validate that implementation is right? Especially back propagation.
 - **Numerical approximation by gradient checking** - mathematical verification of the gradients through approximation. Approximate the parameters (weights and bias) and find the Euclidean distance between the computed gradients and the approximated gradients. A good implementation will have a distance close to $10^{-7}$. Gradient checking is computationally expensive, so we use only to verify and then turn it off during actual training time.
 
----
-
 ### References
 
 - [Enabling private emails in github commits](https://stackoverflow.com/questions/43378060/meaning-of-the-github-message-push-declined-due-to-email-privacy-restrictions)
