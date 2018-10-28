@@ -18,8 +18,19 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
     - [Numerical approximation of gradients](#numerical-approximation-of-gradients)
     - [Gradient checking](#gradient-checking)
     - [Gradient Checking Implementation Notes](#gradient-checking-implementation-notes)
-  - [Summary](#summary)
-  - [References](#references)
+    - [Summary](#summary)
+    - [References](#references)
+  - [Week 2 Optimization Algorithms](#week-2-optimization-algorithms)
+    - [Mini-batch gradient descent](#mini-batch-gradient-descent)
+    - [Understanding mini-batch gradient descent](#understanding-mini-batch-gradient-descent)
+    - [Exponentially Weighted Averages](#exponentially-weighted-averages)
+    - [Understanding exponentially weighted averages](#understanding-exponentially-weighted-averages)
+    - [Bias Correction](#bias-correction)
+    - [Momentum](#momentum)
+    - [Root Means Square (RMS) Prop](#root-means-square-rms-prop)
+    - [Adam Optimization](#adam-optimization)
+    - [Learning Rate Decay](#learning-rate-decay)
+    - [Problem of local optima](#problem-of-local-optima)
 
 ## Week 1 - Setting up your ML application
 
@@ -165,8 +176,7 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 - For deeper networks, $\hat y$ can get exponentially small (w < identity) or large (w > identity).
 - Picture explains how it can happen.(*Note*: I didn't understand why $w^{[l]}$ alone is taken different than other $w$ values)
 - ![vanishing-exploding-gradients](images/vanishing-exploding-gradients.png)
-- Some modern networks can have 100+ layers (Microsoft recently came up with one such network)
-- [ ] Find a link to this fact
+- Some modern networks can have 100+ layers (Microsoft recently came up with one such network, see [here](https://www.wired.com/2016/01/microsoft-neural-net-shows-deep-learning-can-get-way-deeper/) and [here](https://blogs.microsoft.com/ai/microsoft-researchers-win-imagenet-computer-vision-challenge/)). [Original research paper](https://arxiv.org/pdf/1512.03385.pdf).
 - can be alleviated to some extent (partial solution) by choosing the right weights
 
 ### Weight initialization for deep networks (single neuron example)
@@ -210,7 +220,7 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 
 ---
 
-## Summary
+### Summary
 
 - Split datasets into train, dev and test before fitting the model. Typical ratio used to be 60:20:20, now most applications use 98:1:1 (can vary). Why we split?
 - To improve overall accuracy by reducing the bias and variance of our model. Bias & Variance can have different impacts on the model based on how low and how high they are. High variance tells us that a model fits the training set perfectly, but fails to generalize it test set. That is also called **overfitting**. How can we fix that?
@@ -228,10 +238,12 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 
 ---
 
-## References
+### References
 
 - [Enabling private emails in github commits](https://stackoverflow.com/questions/43378060/meaning-of-the-github-message-push-declined-due-to-email-privacy-restrictions)
 - When running the programming exercise notebook locally, it results in an error due to a small bug in plotting. Fixed that with the help of this [link](https://stackoverflow.com/questions/49840380/matplotlib-scatter-typeerror-unhashable-type-numpy-ndarray).
+- [AI Tools in VS Code](https://github.com/Microsoft/vscode-tools-for-ai)
+- [Deep Residual Net](https://blogs.microsoft.com/ai/microsoft-researchers-win-imagenet-computer-vision-challenge/) from Microsoft to compete in ImageNet
 
 References noted while working on the programming assignemnt.
 
@@ -245,3 +257,150 @@ References noted while working on the programming assignemnt.
   - random.randn() picks samples from standard normal distribution (aka Guassian Distribution) with a mean of 0 and variance of 1. Random sample can even go even below 0 here. So we cannot use this in places where we want the values to reflect probability.
   - Thus we use random.rand() to generate dropout matrices.
   - Some references to [Standard normal distribution](http://mathworld.wolfram.com/StandardNormalDistribution.html) and [Normal distribution](http://mathworld.wolfram.com/NormalDistribution.html)
+
+## Week 2 Optimization Algorithms
+
+Optimal algorithms to improve speed of training and convergence.
+
+### Mini-batch gradient descent
+
+- Vectorization helps to speed up computing. but what if the training set is super large (say 5M) even for vectorized computation?
+- Break training set into multiple mini sets (5K sets of 1000 examples each). Break $X$ into $X^{{1}}, X^{{2}}...$
+- Batch processing is the other term for usual processing where we run one full forward prop on all training examples and then compute back prop. Whereas in mini-batch processing, we breakdown training set into mini batches and run them through our model.
+
+  ```python
+  # Pseudocode for one epoch (full pass through the training set)
+  for t = 1...batch_size:
+    A = forward_propagate(X[t])
+    J[t] = compute_cost(X[t], A, Y[t]) # J, with m = sizeof(X[t]), with regularization
+    grads = backward_prop(X[t], Y[t]) # w.r.t J[t]
+  ```
+
+### Understanding mini-batch gradient descent
+
+- Cost curve between batch and mini-batch processing
+- ![batch-vs-mini-batch](images/15-batch-vs-mini-batch-gradient-descent.png)
+- Choosing the mini-batch size
+  - size = m, == batch gradient descent, takes too long to progress
+  - size = 1, == stochastic gradient descent - every example in its own batch. Loses the advantage of vectorized processing. takes too slow.
+  - ideal size = 1...m, that is neither too big nor too small.
+- make progress after each mini batch processing
+- Some guidelines
+  - m <= 2000 (for few thousands), use batch processing
+  - For bigger value of 'm', pick the mini-batch sizes in the powers of 2 (64, 128, 256, 512 ..) to take advantage of memory boundaries
+  - mini-batch size should be able to fit the training set within the CPU/GPU memory.
+
+### Exponentially Weighted Averages
+
+Some optimization algorithms are faster than gradient descent. They are built on the idea of exponentially weighted averages.
+
+- For e.g., take daily temperature in London for a year. Plot them on a 2-D graph. We can take moving average of the daily temperature with different window sizes. Depending on the window size, the curve may be more noisy or less noisy.
+- Larger window size tends to have less noise, but also susceptible to less reaction to changes in the temperate.
+- Expressing EWA mathematically - $V_t = \beta V_{t-1} + (1-\beta)\theta_t$. Refer to the below imag e for sample values of $\beta$ and the window sizes.
+- ![ewa](images/16-exponentially-weighted-moving-average.png)
+- window size of moving average ~= $\frac{1}{1-\beta}$
+
+### Understanding exponentially weighted averages
+
+Intuitions behind exponentially weighted average algorithms
+
+- For e.g. consider samples over 100 days. Expanding the formula $V_t = \beta V_{t-1} + (1-\beta)\theta_t$ to all examples, we can see that each average is multiplied by exponentially decreasing factor. Hence the name exponenetially weighted moving average.
+  ![ewa-intuition](images/17-Intuition-exponentially-weighted-average.png)
+- Some math behind how we get $\frac{1}{1-\beta}$. Didn't understand fully.
+- Sum of the coefficients is close to 1/e.
+- Implementing EWA.. can be done recursively. Optimized to dynamic programming style implementation.
+  ```python
+  # v0 = 0
+  # v1 = b*v0 + (1-b)theta1
+  # v2 = b*v1 + (1-b)theta2
+  # v3 = b*v2 + (1-b)theta3
+
+  v0 = 0
+  for i in range(len(thetas)):
+    v0 = b*v0 + (1-b)*theta[i]
+  ```
+
+### Bias Correction
+
+- to improve the accuracy of EWA
+- In the initial phase of averaging when EWA is warming up, it starts off at a lower value especially when $\beta$ is large. It slowly catches up as 't' increases. 
+- Add some bias to get better accuracy in the warming stages. As 't' increases, the bias approaches to zero.
+- ![bias-correction](images/18-bias-correction.png)
+- Not many real-world ML models use bias correction though. Dr.Ng said we may need in some cases.
+
+### Momentum
+
+Almost work faster than standard gradient descent always..based on exponentially weighted average
+
+- Noisy oscillations in the gradient descent slows down the speed of learning. To avoid that, we use gradient-descent-momentum
+- How it works? Compute $\partial w, \partial b$ as usual on a mini-batch. Find $V_{dw} and $V_{db}$ and then update W as $W - \alpha * V_{dw}$
+- ![Momentum](images/19-momemtum.png)
+- Smoothes the gradient descent to descend faster. Drawing analogy from physics, think of a ball rolling down in a bowl. Gradient descent gives the necessary acceleration while momentum gives the necessary velocity
+- Implementation details
+  - Two more hyperparameters: $\alpha$ - learning rate, $\beta$ EWA exponent
+  ```python
+  # some implementations tend to ignore (1-beta) component, but Dr.Ng
+  # recommended not to ignore.
+
+  # dw, db calculated from the current mini-batch
+
+  # start with vdw and vdb as 0
+  vdw = vdb = 0
+
+  # for each iteration t
+  vdw = beta*vdw + (1-beta)*dw
+  vdb = beta*vdb + (1-beta)*db
+  W = W - (alpha * vdw)
+  b = b - (alpha * vdb)
+  ```
+  - Bias correction is often ignored.
+
+### Root Means Square (RMS) Prop
+
+- Objective: Go slow in the vertical direction (pointed by b), and go fast in the horizontal direction (pointed by w)
+- Square the gradients and then take root of the sum
+- RMS adds a new hyperparamter $\beta_1$ to the mix.
+- *Didn't got this idea fully..but pressing ahead..*
+- ![RMS-Prop](images/20-RMS-Prop.png)
+- Fun fact: This was first proposed in a Coursera course from Geoff Hington than in a research paper.
+
+### Adam Optimization
+
+Many optimization algorithms proposed over the years worked initially, but missed to generalize. RMS, Momentum and Adam stood out among the other optimization and gained more popularity as they could generalize more neural networks than others.
+
+ADAM - stands for *Adaptive Momement Estimation*
+
+Adam optimization is built on Momentum and RMS optimzations. After finding $V_dw$, $V_db$, $S_dw$, and $S_db$ from Momentum and RMS, we then scale them with $\frac{1}{1-\beta_1^t}$ and $\frac{1}{1-\beta_2^t}$ respectively, and then update W and b as mentioned in the image below. Note the $\epsilon$ in the update equation.
+
+![adam-optimization](images/21-adam-optimization.png)
+Choice of Hyperparameters as recommended by the Adam paper.
+
+| Hyperparameter | Vaue               |
+| -------------- | ------------------ |
+| $\alpha$       | needs to be tuned  |
+| $\beta_1$      | 0.9 (for $dw$)     |
+| $\beta_2$      | 0.999 (for $dw^2$) |
+| $\epsilon$     | $10^{-8}$          |
+
+### Learning Rate Decay
+
+Faster learning rate may sometimes oscillate more as it nears convergence, but never really converge. We can slow down the learning rate in cases like that.
+
+Many methods to update learning rate for each iteration(epoch). Commonly used is $\alpha = \frac{1}{1 + decay_rate*epoch_num}\alpha_0$
+![learning-rate-decay](images/22-learning-rate-decay.png)
+
+- Other methods
+  - $\alpha = 0.95^{epoch_num}.\alpha_0$ (Exponential decay)
+  - $\alpha = \frac{k}{\sqrt{epoch-num}}.\alpha_0$
+  - discrete staircase (learning halved at each step)
+  - Manual Decay - watch the model performance, increase or decrease the learning rate manually
+- In general, learning rate decay ranks low in the hyperparameter tuning. It is important to get the model working properly with fixed learning rate first and then we can apply learning rate decay.
+
+### Problem of local optima
+
+In a high dimensional parameter space, many local optima may turn out to be saddle point than true local optima. It is called saddle point beacuse it resembles the saddle on horse seat.
+
+![problem-of-local-optima](images/23-problem-of-local-optima.png)
+
+Another problem is the plateau where it is unlikely to get stuck in local optima, but the learning rate can be very very slow due to flat surface in the curve for a long time.
+![problem-of-plateau](images/24-problem-of-plateau.png)
