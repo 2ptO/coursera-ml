@@ -32,6 +32,11 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
     - [Learning Rate Decay](#learning-rate-decay)
     - [Problem of local optima](#problem-of-local-optima)
     - [Summary-week2](#summary-week2)
+  - [Week 3 - Hyperparameter Tuning, Programming Frameworks](#week-3---hyperparameter-tuning-programming-frameworks)
+    - [Tuning Hyperparameters](#tuning-hyperparameters)
+    - [Using an appropriate scale](#using-an-appropriate-scale)
+    - [Tuning in Practice, Pandas Vs Caviar](#tuning-in-practice-pandas-vs-caviar)
+    - [Normalizing activations in a network](#normalizing-activations-in-a-network)
 
 ## Week 1 - Setting up your ML application
 
@@ -191,14 +196,14 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 | tanh       | $\sqrt{\frac{2}{n}}$ |
 
 - `w[l] = np.random.rand(dim1, dim2) * np.sqrt(2/n[l-1])`
-- ![weight-initialization](images/weight-initialization.png)
+- ![weight-initialization](images/11-weight-initialization.png)
 - Choosing the right random values is another big problem in math
 
 ### Numerical approximation of gradients
 
 - Gradient checking - used to validate implementation of back propagation
 - Nudge $\theta$ on either side instead of only to the right. Find derivative using both. I didn't understand the math behind this much. The end result is that the approximation error is much lower with the two sided approximations. It runs slower than the one sided approximation, but is more accurate.
-- ![numerical-approximation](images/Numerical-approximation.png)
+- ![numerical-approximation](images/12-Numerical-approximation.png)
 
 ### Gradient checking
 
@@ -208,7 +213,7 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 - Take $\theta$ from every iteration, find $\partial \theta_{approx}[i]$
   $$ \frac{\partial J}{\partial \theta} = \lim_{\varepsilon \to 0} \frac{J(\theta + \varepsilon) - J(\theta - \varepsilon)}{2 \varepsilon} $$
 - To validate: measure how close $\partial \theta_{approx}$ is to $\partial \theta$ (i.e. flattened vector of actual gradients computed from back propagation). How to measure this? Euclidean distance is the key.
-- ![gradient-checking](images/Gradient-checking.png)
+- ![gradient-checking](images/13-Gradient-checking.png)
 - The ratio of Euclidean distance should be close to the $\epsilon$ as possible for a good result
 - Very effective in catching bugs in the implementation
 
@@ -419,3 +424,53 @@ Covered a lot this week on advanced optimization algorithms. We had been using o
 - **ADAM** - Adaptive Moment Optimization - Combines the benefits of Moment and RMS. Commonly applied optimization technique. Typical values of the ADAM Hyper-parameters: $\beta_1 = 0.9, $\beta_2 = 0.99, \epsilon = 10^{-7}$.
 
 Learning rate decay is another hyperparameter that controls the rate of decay of learning rate. Some common methods exists to update learning rate, but also changed manually in some cases. Ranks low in the list of hyperparameters to be tuned.
+
+## Week 3 - Hyperparameter Tuning, Programming Frameworks
+
+### Tuning Hyperparameters
+
+This going to be fun!
+
+We have seen many hyperparameters so far. 
+
+| Hyperparameter               | Name                  | Notes                                                         |
+| ---------------------------- | --------------------- | ------------------------------------------------------------- |
+| $\alpha$                     | learning rate         | Most important                                                |
+| $\beta$                      | Momentum              | Often set to 0.9, but variable                                |
+| #hidden units                | #hidden units         |                                                               |
+| mini-batch-size              | mini batch size       | used in optimization                                          |
+| #layers                      | number of layers      |                                                               |
+| learning_rate_decay          | learning rate decay   |                                                               |
+| $\beta_1, \beta_2, \epsilon$ | beta1, beta2, epsilon | used in Adam optimization. Often set to 0.9, 0.999, $10^{-8}$ |
+
+- The above order is not a hard-and-fast rule though. When picking random values for the hyperparameters, it is recommended not to use a grid (e.g hp1 vs hp2). Pick randomly.
+- Use coarse to fine - what does it mean? sample in a larger space first, then pick a small space within that large space and repeat the process.
+
+### Using an appropriate scale
+
+- Recommended to use logarithmic scale to pick random variables at a uniform scale
+- ![alpha-scale](images/26-choosing-scale-for-alpha.png)
+- For EWA, we follow a slightly different approach.
+- ![scale-for-ewa](images/27-choosing-scale-for-EWA-params.png)
+- Why linear scale is not recommended? It turns out that when randomly selected value is close to 1, model turns very sensitive to changes. So distribute the sampling space more evenly.
+
+### Tuning in Practice, Pandas Vs Caviar
+
+- Retest hyperparameters occasionally. Intuitions may go stale, dataset may go through rounds of changes etc. Better to re-evaluate once in a while (every few months or so)
+- Babysitting one model (Panda method) vs training many models in parallel (caviar method). Selection may differ based on the applications.
+- ![pandas-vs-caviar](images/28-pandas-vs-caviar.png)
+
+### Normalizing activations in a network
+
+Makes hyperparameter search easier and increase the robustness of the neural network.
+
+- We normalized (bring mean = 0, variance = 1) the inputs in logistic regression before. What is the network is a deep network? Can we apply normalization to hidden layers to speed up computations within the hidden layers?
+- With hidden layers, we compute the linear function $Z$ and then apply the activation function $A$. Normalization is typically applied to Z than A (although some researchers follow the latter)
+- Implementing batch normalization. Four key equations involved in implementation. Take our hidden layer value $Z$
+  1. $\mu = \frac{1}{m}\Sigma_{i=1}^{m} Z^{(i)}$
+  2. $\sigma^2 = \frac{1}{m}Sigma_{i=1}^{m} (Z^{(i)} - \mu)^2$
+  3. $Z_{norm}^{(i)} = \frac{Z^{(i)} - \mu}{\sqrt{\sigma^2 + \epsilon}}$
+  4. $\tilde{Z}^{(i)} = \gamma Z_{norm}^{(i)} + \beta$
+- The fourth equation is important. Though we normalize, hidden layers may have different activation functions and the values may not fit well within the normal distribution. Bring the mean=0 and variance = 1 in those cases will not be that helpful. So vary the distribution slightly using the two new parameters $\gamma$ and $\beta$. These two parameters are learnable - i.e they are updated just like our parameters $W$ and $b$ as go through different iterations.
+- ![implementing-batch-norm](images/29-implementing-batch-norm.png)
+- If $\gamma = \sqrt{\sigma^2 + \epsilon}$ and $\beta = \mu$, then it makes $Z_{norm}^{(i)} = Z^{(i)}$, in other words, this combination of values cancels out the normalization. This is an example of how the normalization can be controlled with these two parameters.
