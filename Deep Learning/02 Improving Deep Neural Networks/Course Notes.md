@@ -18,7 +18,7 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
     - [Numerical approximation of gradients](#numerical-approximation-of-gradients)
     - [Gradient checking](#gradient-checking)
     - [Gradient Checking Implementation Notes](#gradient-checking-implementation-notes)
-    - [Summary](#summary)
+    - [Summary-week1](#summary-week1)
     - [References](#references)
   - [Week 2 Optimization Algorithms](#week-2-optimization-algorithms)
     - [Mini-batch gradient descent](#mini-batch-gradient-descent)
@@ -31,6 +31,7 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
     - [Adam Optimization](#adam-optimization)
     - [Learning Rate Decay](#learning-rate-decay)
     - [Problem of local optima](#problem-of-local-optima)
+    - [Summary-week2](#summary-week2)
 
 ## Week 1 - Setting up your ML application
 
@@ -220,7 +221,7 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
 
 ---
 
-### Summary
+### Summary-week1
 
 - Split datasets into train, dev and test before fitting the model. Typical ratio used to be 60:20:20, now most applications use 98:1:1 (can vary). Why we split?
 - To improve overall accuracy by reducing the bias and variance of our model. Bias & Variance can have different impacts on the model based on how low and how high they are. High variance tells us that a model fits the training set perfectly, but fails to generalize it test set. That is also called **overfitting**. How can we fix that?
@@ -257,6 +258,8 @@ References noted while working on the programming assignemnt.
   - random.randn() picks samples from standard normal distribution (aka Guassian Distribution) with a mean of 0 and variance of 1. Random sample can even go even below 0 here. So we cannot use this in places where we want the values to reflect probability.
   - Thus we use random.rand() to generate dropout matrices.
   - Some references to [Standard normal distribution](http://mathworld.wolfram.com/StandardNormalDistribution.html) and [Normal distribution](http://mathworld.wolfram.com/NormalDistribution.html)
+
+---
 
 ## Week 2 Optimization Algorithms
 
@@ -330,10 +333,10 @@ Intuitions behind exponentially weighted average algorithms
 
 ### Momentum
 
-Almost work faster than standard gradient descent always..based on exponentially weighted average
+Because mini-batch gradient descent makes a parameter update after seeing just a subset of examples, the direction of the update has some variance, and so the path taken by mini-batch gradient descent will "oscillate" toward convergence. Using momentum can reduce these oscillations.. It is almost work faster than standard gradient descent always..based on exponentially weighted average
 
 - Noisy oscillations in the gradient descent slows down the speed of learning. To avoid that, we use gradient-descent-momentum
-- How it works? Compute $\partial w, \partial b$ as usual on a mini-batch. Find $V_{dw} and $V_{db}$ and then update W as $W - \alpha * V_{dw}$
+- How it works? Compute $\partial w, \partial b$ as usual on a mini-batch. Find $V_{dw} and V_{db}$ and then update W as $W - \alpha * V_{dw}$
 - ![Momentum](images/19-momemtum.png)
 - Smoothes the gradient descent to descend faster. Drawing analogy from physics, think of a ball rolling down in a bowl. Gradient descent gives the necessary acceleration while momentum gives the necessary velocity
 - Implementation details
@@ -368,9 +371,9 @@ Almost work faster than standard gradient descent always..based on exponentially
 
 Many optimization algorithms proposed over the years worked initially, but missed to generalize. RMS, Momentum and Adam stood out among the other optimization and gained more popularity as they could generalize more neural networks than others.
 
-ADAM - stands for *Adaptive Momement Estimation*
+ADAM - stands for *Adaptive Moment Estimation*
 
-Adam optimization is built on Momentum and RMS optimzations. After finding $V_dw$, $V_db$, $S_dw$, and $S_db$ from Momentum and RMS, we then scale them with $\frac{1}{1-\beta_1^t}$ and $\frac{1}{1-\beta_2^t}$ respectively, and then update W and b as mentioned in the image below. Note the $\epsilon$ in the update equation.
+Adam optimization is built on Momentum and RMS optimzations. After finding $V_{dw}$, $V_{db}$ (EWA of gradients), $S_{dw}$, and $S_{db}$ (EWA of squares of gradients) from Momentum and RMS, we then scale them with $\frac{1}{1-\beta_1^t}$ and $\frac{1}{1-\beta_2^t}$ respectively to correct bias, and then update W and b as mentioned in the update rule in the image below. Note the $\epsilon$ in the update equation. It is added to avoid running to divide-by-zero situation.
 
 ![adam-optimization](images/21-adam-optimization.png)
 Choice of Hyperparameters as recommended by the Adam paper.
@@ -404,3 +407,17 @@ In a high dimensional parameter space, many local optima may turn out to be sadd
 
 Another problem is the plateau where it is unlikely to get stuck in local optima, but the learning rate can be very very slow due to flat surface in the curve for a long time.
 ![problem-of-plateau](images/24-problem-of-plateau.png)
+
+### Summary-week2
+
+Covered a lot this week on advanced optimization algorithms. We had been using only gradient descent so far as the optimization algorithm and iterate (forward prop and backprop) on all training set examples using vectorization. Though the calculations are vectorized, it can take a long time to learn the paramters if the dataset is really large. So we apply some advanced optimizations to learn the parameters faster.
+
+- **Mini-batch Gradient Descent**
+  - Shuffle and partition the dataset into small batches, update parameters after each batch. One full pass of all mini-batches is called epoch. Batch size is typically in powers of 2 to keep aligned with CPU memory boundaries. Dataset is typically shuffled and partitioned after each epoch.
+  - mini batch size = 1 for stochastic gradient, m for batch gradient, 1..m for mini batch
+- **Exponential Weighted Average** - forms the basic idea on which further optimization algorithsm are built. It takes a moving average of the samples. Hyperparameter $\beta$ (0..1) determines the size of the moving window and the oscillations.
+- **Momentum** - Analogous to momentum in physics, Gradient descent is the accelaration while momentum determines the velocity accumulated as we descend down. Update the gradients with momentum and then update the parameters. It takes the past gradients into account to smooth out the steps of the gradient descent. It can be applied to batch gradient descent, mini-batch gradient descent and stochastic gradient descent (batch size of 1)
+- **RMS** - Root Mean Square - takes the square of gradients in updating the velocity and then takes the root of the velocity in updating the parameters. Uses the hyperparameter $\beta_2$
+- **ADAM** - Adaptive Moment Optimization - Combines the benefits of Moment and RMS. Commonly applied optimization technique. Typical values of the ADAM Hyper-parameters: $\beta_1 = 0.9, $\beta_2 = 0.99, \epsilon = 10^{-7}$.
+
+Learning rate decay is another hyperparameter that controls the rate of decay of learning rate. Some common methods exists to update learning rate, but also changed manually in some cases. Ranks low in the list of hyperparameters to be tuned.
