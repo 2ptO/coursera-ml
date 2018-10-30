@@ -37,6 +37,15 @@ Notes from course-2 of the [Deep Learning specialization](https://www.coursera.o
     - [Using an appropriate scale](#using-an-appropriate-scale)
     - [Tuning in Practice, Pandas Vs Caviar](#tuning-in-practice-pandas-vs-caviar)
     - [Normalizing activations in a network](#normalizing-activations-in-a-network)
+    - [Fitting Batch Norm to a network](#fitting-batch-norm-to-a-network)
+      - [Implementing batch norm](#implementing-batch-norm)
+    - [Why batch norm works?](#why-batch-norm-works)
+    - [Batch norm at test time](#batch-norm-at-test-time)
+    - [Softmax Regression](#softmax-regression)
+    - [Training a softmax classifier](#training-a-softmax-classifier)
+    - [Deep Learning Frameworks](#deep-learning-frameworks)
+    - [TensorFlow](#tensorflow)
+    - [TODO](#todo)
 
 ## Week 1 - Setting up your ML application
 
@@ -466,11 +475,97 @@ Makes hyperparameter search easier and increase the robustness of the neural net
 
 - We normalized (bring mean = 0, variance = 1) the inputs in logistic regression before. What is the network is a deep network? Can we apply normalization to hidden layers to speed up computations within the hidden layers?
 - With hidden layers, we compute the linear function $Z$ and then apply the activation function $A$. Normalization is typically applied to Z than A (although some researchers follow the latter)
-- Implementing batch normalization. Four key equations involved in implementation. Take our hidden layer value $Z$
+- Implementing batch normalization. Four key equations involved in implementation. Take network with one hidden layer, $Z$
   1. $\mu = \frac{1}{m}\Sigma_{i=1}^{m} Z^{(i)}$
   2. $\sigma^2 = \frac{1}{m}Sigma_{i=1}^{m} (Z^{(i)} - \mu)^2$
   3. $Z_{norm}^{(i)} = \frac{Z^{(i)} - \mu}{\sqrt{\sigma^2 + \epsilon}}$
-  4. $\tilde{Z}^{(i)} = \gamma Z_{norm}^{(i)} + \beta$
-- The fourth equation is important. Though we normalize, hidden layers may have different activation functions and the values may not fit well within the normal distribution. Bring the mean=0 and variance = 1 in those cases will not be that helpful. So vary the distribution slightly using the two new parameters $\gamma$ and $\beta$. These two parameters are learnable - i.e they are updated just like our parameters $W$ and $b$ as go through different iterations.
+  4. $\tilde{Z}^{(i)} = \gamma Z_{norm}^{(i)} + \beta$ (This $\beta$ is different from $\beta$ used in ADAM optimzation)
+- The fourth equation is important. Though we normalize, hidden layers may have different activation functions and the values may not fit well within the normal distribution. Bringing the mean=0 and variance = 1 in those cases will not be that helpful. So vary the distribution slightly using the two new parameters $\gamma$ and $\beta$. These two parameters are learnable - i.e they are updated just like our parameters $W$ and $b$ as go through different iterations.
 - ![implementing-batch-norm](images/29-implementing-batch-norm.png)
 - If $\gamma = \sqrt{\sigma^2 + \epsilon}$ and $\beta = \mu$, then it makes $Z_{norm}^{(i)} = Z^{(i)}$, in other words, this combination of values cancels out the normalization. This is an example of how the normalization can be controlled with these two parameters.
+
+### Fitting Batch Norm to a network
+
+Previously we implemented normalization to one hidden layer using the parameters $\gamma$ and $\beta$. Extending that to a deeper network with multiple layers, needs $\gamma$ and $\beta$ for every layer as the number of hidden units could vary. Because of this requirement, $\gamma$ and $\beta$ are also included in our base parameters along with $W$ and $b$. 
+
+- For each layer, compute the linear function Z, apply normalization and then apply activation function.
+- $\gamma$ and $\beta$ are learnable parameters, so they are also updated just like $W$ and $b$ in the back propagation step.($\gamma = \gamma - \alpha*\partial \gamma$ and $\beta = \beta - \alpha*\partial \beta$)
+- Optimizations like RMS Prop, Moment and ADAM can be applied to the normalization parameters as well.
+- **Note**: Since normalization brings the mean and variance to 0 and 1, any constant we add to Z gets canceled out during normalization. So our bias vector $b$ becomes insignificant when using batch normalization. It is often initialized to all zeros or not used at all when batch norm is applied.
+
+#### Implementing batch norm
+
+- Batch norm is typically applied to the mini batches
+- $\gamma$ and $\beta$ are of the same shape as $b$, typically ($n^{[l]}$, 1)
+- Most programming frameworks already have implemented batch normalization, so we can directly call the function (e.g. `tf.batch_normalize()`) instead of writing our own implementation.
+  
+![implementing-batch-norm](images/30-implementing-batch-norm.png)
+
+### Why batch norm works?
+
+Take our standard example of cat classifier. If the model is trained only with black cats, then it might not do well if the test set contains different colored cats. This happens because the data comes from different distributions.
+![why-batch-norm-works](images/31-why-batch-norm-works.png)
+
+The shift in the predictions X-->Y, when the distribution changes is called the *Covariance shift*.
+
+- **Why covariance shift is problematic to neural networks**? Each hidden layer is trained to predict Y given input A from the previous layers. So change in the distribution of input will cascade into the hidden layers and affect the prediction too.
+- Batch norm reduces the covariance shift by zeroing out the mean and bring the variance to 1 in each layer. Consequently, prediction accuracy also improves.
+- **Batch norm as regularization** - regularization is not the intent of batch norm, rather an unintended consequence. Since batch norm is applied in mini-batches, mean/variance will likely be little noisy between the mini-batches. Since we scale each mini batch by the normalization parameters, this also adds some regularization to each hidden layer activations like the $\lambda$ parameter in L2 norm. This side effect can be reduced by choosing a larger mini batch size. Take away: Do not use batch-norm as a means of regularization intentionally.
+
+### Batch norm at test time
+
+Mini-batch norm is typically applied only during training time as test set need not have enough inputs to form mini batches. At times, we may even have only one example in the test set. Finding mean and variance on one example doesn't make sense. So we derive $\mu$
+and $\sigma$ for our test set from the EWA of the mean and variance from each layer during the training time.
+![batch-norm-at-test-time](images/32-batch-norm-in-test-time.png)
+
+### Softmax Regression
+
+This is multi-class logical regression where the model classifies the input into one of the multiple output classes.
+
+Notations:
+C = #classes
+
+E.g. Images classfied into cats, dogs and chicks. The final output layer will have a probability for each of the classes.
+![softmax-intro](images/33-softmax-intro.png)
+
+- The key difference between logistic regression and softmax regression lies in the activation function. Logistic regression uses the sigmoid function. Whereas in softmax, we use the following activation function.
+- Compute a temporary function $t = e^{Z[l]}$, taking exponents element wise. Then update $a^{[l]} = \frac{t_i}{\sum_{j=1}^C} t_i$ - this basically zeros out the mean. I don't know why we use the temporary function and the math behind that. Below image shows an example of softmax layer with 4 classes.
+
+![softmax-activations](images/34-softmax-activations.png)
+
+Some examples of softmax. You can see that decision boundaries separating the classes is actually linear though.
+![softmax-examples](images/35-softmax-examples.png)
+
+### Training a softmax classifier
+
+Softmax comes from contradicting to a concept called "Hard max". Hard max sets the largest value to 1 and zeros out the rest. Whereas softmax reduces the input to a softer value (it doesn't zero out completely. The reduced values do match the pattern of the input values)
+![softmax-vs-hardmax](images/36-softmax-vs-hardmax.png)
+
+- What about loss function? - uses a form of maximum likelihood estimation in statistics. In simple terms, the loss function we use here is $L(\hat{y}, y) = -\sum_{y=1}^{C}y_jlog(\hat{y_j})$, for multiple examples $J = (1/m)\sum_{i=1}^{m}L(\hat{y}^{(i)}, y^{(i)})$. Larger the value probability inside $\hat{y}^{(i)}$, lower the cost, better the prediction.
+- Dimension of Y used to be (1, m) with logistic regression. With softmax with multiple classes, dimension of Y becomes (C, m).
+- **Gradient Descent** - First step of the back propagation starts with a different equation when using softmax regression. $dz^{[l]} = \hat{y} - y$. With Tensorflow, the framework automatically takes care of finding the derivative. We do not have to implement this derivation ourselves.
+
+### Deep Learning Frameworks
+
+My favorite topic of this week!
+
+Some famous frameworks.
+![Deep-learning-frameworks](images/37-deep-learning-frameworks.png)
+Takeaway: Pick truly open source, not pseudo open.
+
+### TensorFlow
+
+Taking a sample cost function and minimizing it using tenserflow.
+
+< add sample code - basic, with tf functions >
+
+< add sample code - with equation >
+
+< add sample code - with place holder>
+
+In the background, a computation graph is constructed from the cost function. Using that, tf automatically figures out the derivates of the functions in the computation graph using built-in functions and does backward propagation.
+
+### TODO
+
+- [ ] Add code to tensorflow section
+- [ ] Find answers to the sampling question in the quiz
