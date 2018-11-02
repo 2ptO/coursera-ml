@@ -550,6 +550,7 @@ Softmax comes from contradicting to a concept called "Hard max". Hard max sets t
 My favorite topic of this week!
 
 Some famous frameworks.
+
 ![Deep-learning-frameworks](images/37-deep-learning-frameworks.png)
 Takeaway: Pick truly open source, not pseudo open.
 
@@ -569,3 +570,5 @@ In the background, a computation graph is constructed from the cost function. Us
 
 - [ ] Add code to tensorflow section
 - [ ] Find answers to the sampling question in the quiz
+- [ ] Finish programming assignment
+- [ ] Post week3 summary
